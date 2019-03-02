@@ -115,10 +115,97 @@ void statusCallback(KeySearchStatus info)
 	} else {
 		speedStr = util::format("%.2f", info.speed) + " MKey/s";
 	}
-	std::string totalStr = "(" + util::formatThousands(_config.totalkeys + info.total) + " total)";
+
+    secp256k1::uint256 totalRangeKeys = _config.endKey.sub(_config.startKey);
+
+    std::string totalStr;
+
+    secp256k1::uint256 remainingKeys = totalRangeKeys.sub(info.total);
+
+    if (_config.randomMode) {
+        totalStr = "(" + util::formatThousands(_config.totalkeys + info.total) + " total)";
+    } else {
+        totalStr = "(" + remainingKeys.toString(16, false) + " remaining)";
+    }
 
 	std::string timeStr = "[" + util::formatSeconds((unsigned int)((_config.elapsed + info.totalTime) / 1000)) + "]";
 
+    std::string timeRemainingStr;
+
+    if (_config.randomMode) {
+        
+        timeRemainingStr = "";
+
+    } else {
+        
+        secp256k1::uint256 timeRemaining = remainingKeys.div(info.speed * 1000000);
+
+        std::string timeString = "second";
+        if (timeRemaining.cmp(1) != 0) {
+            timeString += "s";
+        }
+
+        if (timeRemaining.cmp(60) > 0) {
+            timeRemaining = timeRemaining.add(59).div(60);
+            timeString = "minute";
+            if (timeRemaining.cmp(1) != 0) {
+                timeString += "s";
+            }
+
+            if (timeRemaining.cmp(60) > 0) {
+                timeRemaining = timeRemaining.add(59).div(60);
+                timeString = "hour";
+                if (timeRemaining.cmp(1) != 0) {
+                    timeString += "s";
+                }
+
+                if (timeRemaining.cmp(24) > 0) {
+                    timeRemaining = timeRemaining.add(23).div(24);
+                    timeString = "day";
+                    if (timeRemaining.cmp(1) != 0) {
+                        timeString += "s";
+                    }
+                
+                    if (timeRemaining.cmp(31) > 0) {
+                        timeRemaining = timeRemaining.add(30).div(31);
+                        timeString = "month";
+
+                        if (timeRemaining.cmp(12) > 0) {
+                            timeRemaining = timeRemaining.add(11).div(12);
+                            timeString = "year";
+                            if (timeRemaining.cmp(1) != 0) {
+                                timeString += "s";
+                            }
+
+                             if (timeRemaining.cmp(10) > 0) {
+                                timeRemaining = timeRemaining.add(9).div(10); 
+                                timeString = "decade";
+                                if (timeRemaining.cmp(1) != 0) {
+                                    timeString += "s";
+                                }
+
+                                 if (timeRemaining.cmp(10) > 0) {
+                                    timeRemaining = timeRemaining.add(99).div(100);
+                                    timeString = "century";
+                                    if (timeRemaining.cmp(1) != 0) {
+                                        timeString = "centuries";
+                                    }
+                                }
+
+                                if (timeRemaining.cmp(100) > 0) {
+                                    timeRemaining = 100;
+                                    timeString = "centuries and more!";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        timeRemainingStr = "[ETA " + timeRemaining.toString(10, false) + " " + timeString.c_str() + "]";
+    }
+    
 	std::string usedMemStr = util::format((info.deviceMemory - info.freeMemory) /(1024 * 1024));
 
 	std::string totalMemStr = util::format(info.deviceMemory / (1024 * 1024));
@@ -130,7 +217,7 @@ void statusCallback(KeySearchStatus info)
 	std::string devName = info.deviceName.substr(0, 16);
 	devName += std::string(16 - devName.length(), ' ');
 
-	printf("\r%s %s/%sMB | %s %s %s %s", devName.c_str(), usedMemStr.c_str(), totalMemStr.c_str(), targetStr.c_str(), speedStr.c_str(), totalStr.c_str(), timeStr.c_str());
+	printf("\r%s %s/%sMB | %s %s %s %s", timeStr.c_str(), usedMemStr.c_str(), totalMemStr.c_str(), targetStr.c_str(), speedStr.c_str(), totalStr.c_str(), timeRemainingStr.c_str());
 
     if(_config.checkpointFile.length() > 0) {
         uint64_t t = util::getSystemTime();
