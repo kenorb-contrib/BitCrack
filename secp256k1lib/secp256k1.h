@@ -20,7 +20,7 @@ namespace secp256k1 {
 		
 		Random()
 		{
-			gen = new std::mt19937(rd());
+			gen = new std::mt19937(); // rd()
 			distr = new std::uniform_int_distribution<unsigned int>(0, 0xffffffff);
 		}
 
@@ -299,7 +299,7 @@ namespace secp256k1 {
 			return (this->v[0] & 1) == 0;
 		}
 
-		std::string toString(int base = 16);
+		std::string toString(int base = 16, bool leadingZeros = true);
 
         uint64_t toUint64()
         {

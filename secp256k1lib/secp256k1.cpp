@@ -613,15 +613,26 @@ uint256 secp256k1::multiplyModN(const uint256 &a, const uint256 &b)
 	return r;
 }
 
-std::string secp256k1::uint256::toString(int base)
+std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 {
 	std::string s = "";
 
+	std::string formatStr;
+	
+	if (base == 10)
+		formatStr = "%u";
+	else
+		formatStr = "%.8X";
+	
+	const char *format = formatStr.c_str();
+	
 	for(int i = 7; i >= 0; i--) {
-		char hex[9] = { 0 };
 
-		sprintf(hex, "%.8X", this->v[i]);
-		s += std::string(hex);
+		if (leadingZeros || this->v[i] != 0) {
+			char out[10] = { 0 };
+			sprintf(out, format, this->v[i]);
+			s += std::string(out);
+		}
 	}
 
 	return s;
