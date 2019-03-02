@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
+#include <map>
 
 #include "KeyFinder.h"
 #include "AddressUtil.h"
@@ -103,6 +104,55 @@ void resultCallback(KeySearchResult info)
 	Logger::log(LogLevel::Info, logStr);
 }
 
+typedef struct
+{
+    std::string singular;
+    std::string plural;
+    secp256k1::uint256 factor;
+} time_conversion_t;
+
+std::vector<time_conversion_t> timeConversions = {
+    {"second", "seconds", 1},
+    {"minute", "minutes", 60},
+    {"hour", "hours", 60*60},
+    {"day", "days", 60*60*24},
+    {"week", "weeks", 60*60*24*7},
+    {"month", "months", 60*60*24*7*4},
+    {"year", "years", 60*60*24*7*4*12},
+    {"decade", "decades", 60*60*24*7*4*12*10},
+    {"century", "centuries", (unsigned int)60*60*24*7*4*12*10*10},
+    {"millenium", "milleniums", 0},
+};
+
+void getTimeRemaining(secp256k1::uint256 &outTime, double &outDecimalTime, std::string &outUnit, char base = 's')
+{
+    for(size_t i = 0; i < timeConversions.size(); i++) {
+
+        time_conversion_t *timeConversion = &timeConversions[i];
+        time_conversion_t *timeConversionNext = NULL;
+
+        if (i < timeConversions.size()-1) {
+            timeConversionNext = &timeConversions[i+1];
+        }
+        
+        if (timeConversionNext == NULL || outTime.cmp(timeConversionNext->factor) < 0) {
+            
+            outUnit = timeConversion->singular;
+            outDecimalTime = (double)outTime.toUint64() / (double)timeConversion->factor.toUint64();
+
+            if (outTime.cmp(1) != 0) {
+                outUnit = timeConversion->plural;
+                if (outTime.cmp(1000000) > 0 && timeConversionNext == NULL) {
+                    outDecimalTime = 1000000;
+                    outUnit += " and more!";
+                }
+            }
+
+            return;
+        }
+    }
+}
+
 /**
 Callback to display progress
 */
@@ -138,72 +188,15 @@ void statusCallback(KeySearchStatus info)
 
     } else {
         
-        secp256k1::uint256 timeRemaining = remainingKeys.div(info.speed * 1000000);
+        secp256k1::uint256 timeRemainingSeconds = remainingKeys.div(info.speed * 1000000);
 
-        std::string timeString = "second";
-        if (timeRemaining.cmp(1) != 0) {
-            timeString += "s";
-        }
+        double timeRemaining;
+        std::string timeUnit("second");
+        
+        getTimeRemaining(timeRemainingSeconds, timeRemaining, timeUnit);
+        
 
-        if (timeRemaining.cmp(60) > 0) {
-            timeRemaining = timeRemaining.add(59).div(60);
-            timeString = "minute";
-            if (timeRemaining.cmp(1) != 0) {
-                timeString += "s";
-            }
-
-            if (timeRemaining.cmp(60) > 0) {
-                timeRemaining = timeRemaining.add(59).div(60);
-                timeString = "hour";
-                if (timeRemaining.cmp(1) != 0) {
-                    timeString += "s";
-                }
-
-                if (timeRemaining.cmp(24) > 0) {
-                    timeRemaining = timeRemaining.add(23).div(24);
-                    timeString = "day";
-                    if (timeRemaining.cmp(1) != 0) {
-                        timeString += "s";
-                    }
-                
-                    if (timeRemaining.cmp(31) > 0) {
-                        timeRemaining = timeRemaining.add(30).div(31);
-                        timeString = "month";
-
-                        if (timeRemaining.cmp(12) > 0) {
-                            timeRemaining = timeRemaining.add(11).div(12);
-                            timeString = "year";
-                            if (timeRemaining.cmp(1) != 0) {
-                                timeString += "s";
-                            }
-
-                             if (timeRemaining.cmp(10) > 0) {
-                                timeRemaining = timeRemaining.add(9).div(10); 
-                                timeString = "decade";
-                                if (timeRemaining.cmp(1) != 0) {
-                                    timeString += "s";
-                                }
-
-                                 if (timeRemaining.cmp(10) > 0) {
-                                    timeRemaining = timeRemaining.add(99).div(100);
-                                    timeString = "century";
-                                    if (timeRemaining.cmp(1) != 0) {
-                                        timeString = "centuries";
-                                    }
-                                }
-
-                                if (timeRemaining.cmp(100) > 0) {
-                                    timeRemaining = 100;
-                                    timeString = "centuries and more!";
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        timeRemainingStr = "[ETA " + timeRemaining.toString(10, false) + " " + timeString.c_str() + "]";
+        timeRemainingStr = "[ETA " + util::format("%.2f", timeRemaining) + " " + timeUnit.c_str() + "]";
     }
     
 	std::string usedMemStr = util::format((info.deviceMemory - info.freeMemory) /(1024 * 1024));
