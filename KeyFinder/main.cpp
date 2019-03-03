@@ -104,53 +104,63 @@ void resultCallback(KeySearchResult info)
 	Logger::log(LogLevel::Info, logStr);
 }
 
-typedef struct
-{
+typedef struct {
     std::string singular;
     std::string plural;
     secp256k1::uint256 factor;
+    int forcedValue;
 } time_conversion_t;
 
+secp256k1::uint256 FACTOR_MINUTE(60);
+secp256k1::uint256 FACTOR_HOUR(FACTOR_MINUTE.mul(60));
+secp256k1::uint256 FACTOR_DAY(FACTOR_HOUR.mul(24));
+secp256k1::uint256 FACTOR_WEEK(FACTOR_DAY.mul(7));
+secp256k1::uint256 FACTOR_MONTH(FACTOR_DAY.mul(31));
+secp256k1::uint256 FACTOR_YEAR(FACTOR_DAY.mul(365));
+secp256k1::uint256 FACTOR_DECADE(FACTOR_YEAR.mul(10));
+secp256k1::uint256 FACTOR_CENTURY(FACTOR_DECADE.mul(10));
+secp256k1::uint256 FACTOR_MILLENIUM(FACTOR_CENTURY.mul(10));
+secp256k1::uint256 FACTOR_MILLENIUM_AND_MORE(FACTOR_MILLENIUM.mul(100000000));
+secp256k1::uint256 FACTOR_END("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+
 std::vector<time_conversion_t> timeConversions = {
-    {"second", "seconds", 1},
-    {"minute", "minutes", 60},
-    {"hour", "hours", 60*60},
-    {"day", "days", 60*60*24},
-    {"week", "weeks", 60*60*24*7},
-    {"month", "months", 60*60*24*7*4},
-    {"year", "years", 60*60*24*7*4*12},
-    {"decade", "decades", 60*60*24*7*4*12*10},
-    {"century", "centuries", (unsigned int)60*60*24*7*4*12*10*10},
-    {"millenium", "milleniums", 0},
+    {"second", "seconds", 1, -1},
+    {"minute", "minutes", FACTOR_MINUTE, -1},
+    {"hour", "hours", FACTOR_HOUR, -1},
+    {"day", "days", FACTOR_DAY, -1},
+    {"week", "weeks", FACTOR_WEEK, -1},
+    {"month", "months", FACTOR_MONTH, -1},
+    {"year", "years", FACTOR_YEAR, -1},
+    {"decade", "decades", FACTOR_DECADE, -1},
+    {"century", "centuries", FACTOR_CENTURY, -1},
+    {"millenium", "milleniums", FACTOR_MILLENIUM, -1},
+    {"millenium", "milleniums and more", FACTOR_MILLENIUM_AND_MORE, 100000000},
+    {"END", "END", FACTOR_END, -1},
 };
 
 void getTimeRemaining(secp256k1::uint256 &outTime, double &outDecimalTime, std::string &outUnit, char base = 's')
 {
-    for(size_t i = 0; i < timeConversions.size(); i++) {
+    for(size_t i = 0; i < timeConversions.size()-1; i++) {
 
         time_conversion_t *timeConversion = &timeConversions[i];
-        time_conversion_t *timeConversionNext = NULL;
-
-        if (i < timeConversions.size()-1) {
-            timeConversionNext = &timeConversions[i+1];
-        }
+        time_conversion_t *timeConversionNext = &timeConversions[i+1];
         
-        if (timeConversionNext == NULL || outTime.cmp(timeConversionNext->factor) < 0) {
+        if (outTime.cmp(timeConversionNext->factor) < 0) {
             
             outUnit = timeConversion->singular;
             outDecimalTime = (double)outTime.toUint64() / (double)timeConversion->factor.toUint64();
 
             if (outTime.cmp(1) != 0) {
                 outUnit = timeConversion->plural;
-                if (outTime.cmp(1000000) > 0 && timeConversionNext == NULL) {
-                    outDecimalTime = 1000000;
-                    outUnit += " and more!";
-                }
             }
 
-            return;
+            if (timeConversion->forcedValue != -1)
+                outDecimalTime = timeConversion->forcedValue;
+
+            break;
         }
     }
+
 }
 
 /**
