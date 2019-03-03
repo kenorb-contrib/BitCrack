@@ -138,19 +138,19 @@ std::vector<time_conversion_t> timeConversions = {
     {"END", "END", FACTOR_END, -1},
 };
 
-void getTimeRemaining(secp256k1::uint256 &outTime, double &outDecimalTime, std::string &outUnit, char base = 's')
+void getTimeRemaining(secp256k1::uint256 &timeInSeconds, double &outDecimalTime, std::string &outUnit)
 {
     for(size_t i = 0; i < timeConversions.size()-1; i++) {
 
         time_conversion_t *timeConversion = &timeConversions[i];
         time_conversion_t *timeConversionNext = &timeConversions[i+1];
         
-        if (outTime.cmp(timeConversionNext->factor) < 0) {
+        if (timeInSeconds.cmp(timeConversionNext->factor) < 0) {
             
             outUnit = timeConversion->singular;
-            outDecimalTime = (double)outTime.toUint64() / (double)timeConversion->factor.toUint64();
+            outDecimalTime = (double)timeInSeconds.toUint64() / (double)timeConversion->factor.toUint64();
 
-            if (outTime.cmp(1) != 0) {
+            if (timeInSeconds.cmp(1) != 0) {
                 outUnit = timeConversion->plural;
             }
 
