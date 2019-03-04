@@ -176,11 +176,10 @@ void statusCallback(KeySearchStatus info)
 		speedStr = util::format("%.2f", info.speed) + " MKey/s";
 	}
 
-    secp256k1::uint256 totalRangeKeys = _config.endKey.sub(_config.startKey);
+    secp256k1::uint256 totalRangeKeys = _config.endKey.sub(_config.nextKey);
+    secp256k1::uint256 remainingKeys = totalRangeKeys.sub(info.total);
 
     std::string totalStr;
-
-    secp256k1::uint256 remainingKeys = totalRangeKeys.sub(info.total);
 
     if (_config.randomMode) {
         totalStr = "(" + util::formatThousands(_config.totalkeys + info.total) + " total)";
