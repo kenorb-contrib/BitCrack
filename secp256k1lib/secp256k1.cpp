@@ -6,6 +6,7 @@
 #include <sstream>
 #include"CryptoUtil.h"
 #include "secp256k1.h" 
+#include "util.h" 
 
 using namespace secp256k1;
 
@@ -16,7 +17,7 @@ static crypto::Rng _rng;
 static inline void addc(unsigned int a, unsigned int b, unsigned int carryIn, unsigned int &sum, int &carryOut)
 {
 	uint64_t sum64 = (uint64_t)a + b + carryIn;
-
+	
 	sum = (unsigned int)sum64;
 	carryOut = (int)(sum64 >> 32) & 1;
 }
@@ -614,206 +615,6 @@ uint256 secp256k1::multiplyModN(const uint256 &a, const uint256 &b)
 	return r;
 }
 
-
-#define MAXLEN 1000
-
-struct number {
-    unsigned char digits[MAXLEN];
-    unsigned int num_digits;
-};
-
-
-int add(struct number *, struct number *, struct number *);
-int mult(struct number *, struct number *, struct number *);
-int power(struct number *, unsigned int, struct number *);
-void dec(struct number *);
-
-int add(struct number *a, struct number *b, struct number *c)
-{
-    int i, j;
-    int carry;
-
-    struct number *t;
-
-    if(a->num_digits < b->num_digits) {
-        t = a;
-        a = b;
-        b = t;
-    }
-
-    for(i = 0, carry = 0; i < a->num_digits; i++) {
-
-        if(i >= b->num_digits) j = a->digits[i]+carry;
-        else j = a->digits[i]+b->digits[i]+carry;
-
-        if(j > 9) {
-            j -= 10;
-            carry = 1;
-        } else {
-            carry = 0;
-        }
-
-        c->digits[i]=j;
-    }
-
-    /* Did we overflow? */
-    if(carry > 0 && i == MAXLEN) return -1;
-
-    /* Carry over from last addition? */
-    if(carry > 0) {
-        c->digits[i] = carry;
-        c->num_digits = a->num_digits+1;
-    } else {
-        c->num_digits = a->num_digits;
-    }
-
-    return 0;
-}
-
-
-void copy_number(struct number *dst, struct number *src)
-{
-    int i;
-
-    for(i = 0; i < src->num_digits; i++) dst->digits[i] = src->digits[i];
-
-    dst->num_digits = src->num_digits;
-}
-
-int power(struct number *a, unsigned int n, struct number *b)
-{
-    struct number atmp;
-
-    /* Are we exponentiating by 0? */
-    if(n == 0) {
-        b->num_digits = 1;
-        b->digits[0] = 1;
-        return 0;
-    }
-
-    copy_number(&atmp, a);
-
-    while(--n > 0) {
-        mult(&atmp, a, &atmp);
-    }
-
-    copy_number(b, &atmp);
-    return 0;
-}
-
-
-void dec(struct number *a)
-{
-    int i;
-
-    for(i = 0; i < a->num_digits; i++) {
-        if(a->digits[i] > 0) {
-            a->digits[i]--;
-            break;
-        }
-
-        a->digits[i] = 9;
-    }
-
-    /* Did number of digits get lower */
-    if(i == a->num_digits -1 && a->digits[i] == 0) {
-        for(i = a->num_digits - 1; i >= 0; i--) {
-            if(a->digits[i] != 0) {
-                a->num_digits = i + 1;
-                break;
-            }
-        }
-    }
-}
-
-int mult(struct number *a, struct number *b, struct number *c)
-{
-    struct number btmp;
-    struct number ctmp;
-    struct number *t;
-
-    /* Are we multiplying by 0? */
-    if(a->num_digits == 0 || b->num_digits == 0) {
-        c->num_digits = 0;
-        return 0;
-    }
-
-    if(a->num_digits < b->num_digits) {
-        t = a;
-        a = b;
-        b = t;
-    }
-
-    copy_number(&btmp, b);
-    copy_number(&ctmp, a);
-
-    while(1) {
-        /* Are we multiplying by 1? */
-        if(btmp.num_digits == 1 && btmp.digits[0] == 1) {
-            break;
-        }
-
-        add(&ctmp, a, &ctmp);
-        dec(&btmp);
-    }
-
-    copy_number(c, &ctmp);
-
-    return 0;
-}
-
-// https://stackoverflow.com/questions/10605342/converting-a-long-hexadecimal-string-to-a-decimal-string
-void hex2dec(const char *hex, char *outbuf)
-{
-    int n;
-    char *s;
-    struct number decrep;
-    struct number twopow;
-    struct number digit;
-
-    decrep.num_digits = 0;
-
-    n = strlen(hex);
-    s = (char*)hex;
-
-    while(--n > -1) {
-        /* weight of digit */
-        twopow.num_digits = 2;
-        twopow.digits[0] = 6;
-        twopow.digits[1] = 1;
-        power(&twopow, n, &twopow);
-
-        /* Extract digit */
-		if(*s == '0') {
-			digit.digits[0] = *s - '0';
-			digit.num_digits = 0;
-		} else if(*s <= '9' && *s > '0') {
-			digit.digits[0] = *s - '0';
-			digit.num_digits = 1;
-		} else if(*s <= 'F' && *s >= 'A') {
-            digit.digits[0] = *s - 'A';
-            digit.digits[1] = 1;
-            digit.num_digits = 2;
-        }
-        s++;
-        mult(&digit, &twopow, &digit);
-        add(&decrep, &digit, &decrep);
-    }
-
-    /* Convert decimal number to a string */
-    if(decrep.num_digits == 0) {
-        *outbuf = '0';
-        *(++outbuf) = '\0';
-        return;
-    }
-
-    for(n = decrep.num_digits-1; n >= 0; n--) {
-        *(outbuf++) = '0' + decrep.digits[n];
-    }
-
-    *outbuf = '\0';
-}
-
 std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 {
 	std::string s = "";
@@ -824,7 +625,7 @@ std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 		char out[255] = { 0 };
 
 		std::string t = this->toString(16, leadingZeros);
-		hex2dec((const char*)t.c_str(), out);
+		util::HexToDecString::convert((const char*)t.c_str(), out);
 		s = out;
 		return s;
 	
