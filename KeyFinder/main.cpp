@@ -184,7 +184,7 @@ void statusCallback(KeySearchStatus info)
     if (_config.randomMode) {
         totalStr = "(" + util::formatThousands(_config.totalkeys + info.total) + " total)";
     } else {
-        totalStr = "(" + remainingKeys.toString(16, false) + " remaining)";
+        totalStr = "(" + util::formatThousands(remainingKeys.toString(10, false)) + " remaining)";
     }
 
 	std::string timeStr = "[" + util::formatSeconds((unsigned int)((_config.elapsed + info.totalTime) / 1000)) + "]";

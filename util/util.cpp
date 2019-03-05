@@ -61,6 +61,11 @@ namespace util {
 
 		std::string s(buf);
 
+		return formatThousands(s);
+	}
+
+	std::string formatThousands(std::string s)
+	{
 		int len = (int)s.length();
 
 		int numCommas = (len - 1) / 3;

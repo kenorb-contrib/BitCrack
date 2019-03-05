@@ -22,6 +22,7 @@ uint64_t getSystemTime();
 void sleep(int seconds);
 
 std::string formatThousands(uint64_t x);
+std::string formatThousands(std::string s);
 std::string formatSeconds(unsigned int seconds);
 
 uint32_t parseUInt32(std::string s);
