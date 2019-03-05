@@ -618,7 +618,6 @@ uint256 secp256k1::multiplyModN(const uint256 &a, const uint256 &b)
 std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 {
 	std::string s = "";
-	bool parentSet = false;
 	
 	if (base == 10) {
 
@@ -630,8 +629,7 @@ std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 		return s;
 	
 	} else {
-		
-	
+		bool parentSet = false;
 		for (int i = 7; i >= 0; i--) {
 			if (leadingZeros || this->v[i] != 0 || parentSet) {
 				char out[8] = { 0 };

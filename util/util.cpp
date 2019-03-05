@@ -300,9 +300,7 @@ namespace util {
         size_t right = s.find_last_not_of(c);
 
         return s.substr(left, right - left + 1);
-    }
-
-		
+    }	
 	
 	int HexToDecString::add(struct number *a, struct number *b, struct number *c)
 	{

@@ -177,7 +177,8 @@ void statusCallback(KeySearchStatus info)
 	}
 
     secp256k1::uint256 totalRangeKeys = _config.endKey.sub(_config.nextKey);
-    secp256k1::uint256 remainingKeys = totalRangeKeys.sub(info.total);
+    secp256k1::uint256 totalProcessed(info.total);
+    secp256k1::uint256 remainingKeys = totalRangeKeys.sub(totalProcessed);
 
     std::string totalStr;
 
