@@ -6,7 +6,7 @@
 #include <sstream>
 #include"CryptoUtil.h"
 #include "secp256k1.h" 
-#include "util.h" 
+#include "../util/util.h" 
 
 using namespace secp256k1;
 
