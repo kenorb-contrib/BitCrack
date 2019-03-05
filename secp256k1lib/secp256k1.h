@@ -20,7 +20,7 @@ namespace secp256k1 {
 		
 		Random()
 		{
-			gen = new std::mt19937(); // rd()
+			gen = new std::mt19937(rd());
 			distr = new std::uniform_int_distribution<unsigned int>(0, 0xffffffff);
 		}
 
