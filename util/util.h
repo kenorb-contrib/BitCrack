@@ -45,7 +45,7 @@ std::string trim(const std::string &s, char c=' ');
 // https://stackoverflow.com/questions/10605342/converting-a-long-hexadecimal-string-to-a-decimal-string
 class HexToDecString {
     public:
-        static void convert(const char *hex, char *outbuf);
+        static std::string convert(std::string in);
 
     private:
     #define H2D_MAXLEN 1000

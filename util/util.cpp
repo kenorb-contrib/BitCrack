@@ -436,53 +436,56 @@ namespace util {
 		return 0;
 	}
 
-	void HexToDecString::convert(const char *hex, char *outbuf)
+	std::string HexToDecString::convert(std::string in)
 	{
 		int n;
-		char *s;
+		char s;
 		struct number decrep;
 		struct number twopow;
 		struct number digit;
+		std::string out = "";
 
 		decrep.num_digits = 0;
-		n = strlen(hex);
-		s = (char*)hex;
+		n = in.length();
+		
+		int currentChar = 0;
+		while (--n > -1){
 
-		while(--n > -1) {
 			/* weight of digit */
 			twopow.num_digits = 2;
 			twopow.digits[0] = 6;
 			twopow.digits[1] = 1;
+
 			power(&twopow, n, &twopow);
+			
+			char s = in.at(currentChar++);
 
 			/* Extract digit */
-			if(*s == '0') {
-				digit.digits[0] = *s - '0';
+			if(s == '0') {
+				digit.digits[0] = s - '0';
 				digit.num_digits = 0;
-			} else if(*s <= '9' && *s > '0') {
-				digit.digits[0] = *s - '0';
+			} else if(s <= '9' && s > '0') {
+				digit.digits[0] = s - '0';
 				digit.num_digits = 1;
-			} else if(*s <= 'F' && *s >= 'A') {
-				digit.digits[0] = *s - 'A';
+			} else if(s <= 'F' && s >= 'A') {
+				digit.digits[0] = s - 'A';
 				digit.digits[1] = 1;
 				digit.num_digits = 2;
 			}
-			s++;
+			
 			mult(&digit, &twopow, &digit);
 			add(&decrep, &digit, &decrep);
 		}
 
 		/* Convert decimal number to a string */
 		if(decrep.num_digits == 0) {
-			*outbuf = '0';
-			*(++outbuf) = '\0';
-			return;
+			return out;
 		}
 
 		for(n = decrep.num_digits-1; n >= 0; n--) {
-			*(outbuf++) = '0' + decrep.digits[n];
+			out += '0' + decrep.digits[n];
 		}
 
-		*outbuf = '\0';
+		return out;
 	}
 }

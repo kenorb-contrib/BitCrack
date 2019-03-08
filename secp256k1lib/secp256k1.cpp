@@ -617,30 +617,23 @@ uint256 secp256k1::multiplyModN(const uint256 &a, const uint256 &b)
 
 std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 {
-	std::string s = "";
+	std::string ret = "";
 	
 	if (base == 10) {
-
-		char out[255] = { 0 };
-
-		std::string t = this->toString(16, leadingZeros);
-		util::HexToDecString::convert((const char*)t.c_str(), out);
-		s = out;
-		return s;
-	
+		ret = util::HexToDecString::convert(this->toString(16, false));
 	} else {
 		bool parentSet = false;
 		for (int i = 7; i >= 0; i--) {
 			if (leadingZeros || this->v[i] != 0 || parentSet) {
 				char out[8] = { 0 };
 				sprintf(out, "%.8X", this->v[i]);
-				s += std::string(out);
+				ret += std::string(out);
 				parentSet = true;
 			}
 		}
 	}
 	
-	return s;
+	return ret;
 }
 
 
