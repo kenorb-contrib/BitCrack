@@ -58,7 +58,8 @@ namespace util {
 	{
 		char buf[32] = "";
 
-		sprintf(buf, "%lld", x);
+
+		snprintf(buf, 32, "%lld", x);
 
 		std::string s(buf);
 
@@ -149,9 +150,9 @@ namespace util {
 		unsigned int sec = seconds % 60;
 
 		if(days > 0) {
-			sprintf(s, "%d:%02d:%02d:%02d", days, hours, minutes, sec);
+			snprintf(s, 128, "%d:%02d:%02d:%02d", days, hours, minutes, sec);
 		} else {
-			sprintf(s, "%02d:%02d:%02d", hours, minutes, sec);
+			snprintf(s, 128, "%02d:%02d:%02d", hours, minutes, sec);
 		}
 		
 
@@ -227,7 +228,7 @@ namespace util {
 	{
 		char buf[100] = { 0 };
 
-		sprintf(buf, formatStr, value);
+		snprintf(buf, 100, formatStr, value);
 
 		return std::string(buf);
 	}
@@ -236,7 +237,7 @@ namespace util {
 	{
 		char buf[100] = { 0 };
 
-		sprintf(buf, "%u", value);
+		snprintf(buf, 100, "%u", value);
 
 		return std::string(buf);
 	}
@@ -245,7 +246,7 @@ namespace util {
 	{
 		char buf[100] = { 0 };
 
-		sprintf(buf, "%lld", (uint64_t)value);
+		snprintf(buf, 100, "%lld", (uint64_t)value);
 
 		return std::string(buf);
 	}
@@ -254,7 +255,7 @@ namespace util {
 	{
 		char buf[100] = { 0 };
 
-		sprintf(buf, "%d", value);
+		snprintf(buf, 100, "%d", value);
 
 		return std::string(buf);
 	}

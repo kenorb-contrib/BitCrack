@@ -626,7 +626,7 @@ std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 		for (int i = 7; i >= 0; i--) {
 			if (leadingZeros || this->v[i] != 0 || parentSet) {
 				char out[8] = { 0 };
-				sprintf(out, "%.8X", this->v[i]);
+				snprintf(out, 8, "%.8X", this->v[i]);
 				ret += std::string(out);
 				parentSet = true;
 			}
