@@ -296,7 +296,6 @@ void usage()
     printf("--continue FILE         Save/load progress from FILE\n");
 }
 
-
 /**
  Finds default parameters depending on the device
  */
