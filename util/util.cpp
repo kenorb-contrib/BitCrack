@@ -58,7 +58,6 @@ namespace util {
 	{
 		char buf[32] = "";
 
-
 		snprintf(buf, 32, "%lld", x);
 
 		std::string s(buf);

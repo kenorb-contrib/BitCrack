@@ -625,10 +625,11 @@ std::string secp256k1::uint256::toString(int base, bool leadingZeros)
 		bool parentSet = false;
 		for (int i = 7; i >= 0; i--) {
 			if (leadingZeros || this->v[i] != 0 || parentSet) {
-				char out[8] = { 0 };
-				snprintf(out, 8, "%.8X", this->v[i]);
+				char out[9] = { 0 };
+				snprintf(out, 9, "%.8X", this->v[i]);
 				ret += std::string(out);
 				parentSet = true;
+				
 			}
 		}
 	}
