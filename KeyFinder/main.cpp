@@ -160,7 +160,6 @@ void getTimeRemaining(secp256k1::uint256 &timeInSeconds, double &outDecimalTime,
             break;
         }
     }
-
 }
 
 /**
