@@ -115,7 +115,7 @@ public:
         clCall(clSetKernelArg(_kernel, 2, sizeof(arg3), &arg3));
         clCall(clSetKernelArg(_kernel, 3, sizeof(arg4), &arg4));
         clCall(clSetKernelArg(_kernel, 4, sizeof(arg5), &arg5));
-        clCall(clSetKernelArg(_kernel, 4, sizeof(arg6), &arg6));
+        clCall(clSetKernelArg(_kernel, 5, sizeof(arg6), &arg6));
     }
 
     template<typename T1, typename T2, typename T3, typename T4, typename T5, typename T6, typename T7, typename T8>
