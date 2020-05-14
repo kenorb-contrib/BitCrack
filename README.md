@@ -153,6 +153,8 @@ Build the `cuKeyFinder` project for a CUDA build.
 Note: By default the NVIDIA OpenCL headers are used. You can set the header and library path for
 OpenCL in the `BitCrack.props` property sheet.
 
+Add'l note for djarumlights fork: I could not get it to build using the project. Had to build the whole solution. 
+
 ### Building in Linux
 
 Using `make`:
