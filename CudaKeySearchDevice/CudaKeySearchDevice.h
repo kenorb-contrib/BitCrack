@@ -34,12 +34,15 @@ private:
     int _pointsPerThread;
 
     int _compression;
+    
+    bool _randomMode = false;
 
     std::vector<KeySearchResult> _results;
 
     std::string _deviceName;
 
     secp256k1::uint256 _startExponent;
+    secp256k1::uint256 _end;
 
     uint64_t _iterations;
 
@@ -66,13 +69,15 @@ private:
     secp256k1::uint256 _stride;
 
     bool verifyKey(const secp256k1::uint256 &privateKey, const secp256k1::ecpoint &publicKey, const unsigned int hash[5], bool compressed);
+    
+    std::vector<secp256k1::uint256> exponents;
 
 public:
 
     CudaKeySearchDevice(int device, int threads, int pointsPerThread, int blocks = 0);
 
-    virtual void init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride);
-
+    virtual void init(const secp256k1::uint256 &start, const secp256k1::uint256 &end, int compression, const secp256k1::uint256 &stride, bool randomMode);
+    
     virtual void doStep();
 
     virtual void setTargets(const std::set<KeySearchTarget> &targets);
