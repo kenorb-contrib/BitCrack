@@ -53,6 +53,7 @@ typedef struct {
     uint64_t totalkeys = 0;
     unsigned int elapsed = 0;
     secp256k1::uint256 stride = 1;
+    bool randomMode = false;
 
     bool follow = false;
 }RunConfig;
@@ -195,6 +196,7 @@ void usage()
     printf("--help                  Display this message\n");
     printf("-c, --compressed        Use compressed points\n");
     printf("-u, --uncompressed      Use Uncompressed points\n");
+    printf("-r, --random            Use random values from keyspace\n");
     printf("--compression  MODE     Specify compression where MODE is\n");
     printf("                          COMPRESSED or UNCOMPRESSED or BOTH\n");
     printf("-d, --device ID         Use device ID\n");
@@ -378,6 +380,11 @@ int run()
     Logger::log(LogLevel::Info, "Starting at: " + _config.nextKey.toString());
     Logger::log(LogLevel::Info, "Ending at:   " + _config.endKey.toString());
     Logger::log(LogLevel::Info, "Counting by: " + _config.stride.toString());
+	
+    if (_config.randomMode) {
+        Logger::log(LogLevel::Info, "Generating random starting points");
+    }
+
 
     try {
 
@@ -402,8 +409,8 @@ int run()
         // Get device context
         KeySearchDevice *d = getDeviceContext(_devices[_config.device], _config.blocks, _config.threads, _config.pointsPerThread);
 
-        KeyFinder f(_config.nextKey, _config.endKey, _config.compression, d, _config.stride);
-
+        KeyFinder f(_config.nextKey, _config.endKey, _config.compression, d, _config.stride, _config.randomMode);
+	    
         f.setResultCallback(resultCallback);
         f.setStatusInterval(_config.statusInterval);
         f.setStatusCallback(statusCallback);
@@ -509,7 +516,8 @@ int main(int argc, char **argv)
 	parser.add("-d", "--device", true);
 	parser.add("-c", "--compressed", false);
 	parser.add("-u", "--uncompressed", false);
-    parser.add("", "--compression", true);
+        parser.add("", "--compression", true);
+	parser.add("-r", "--random", false);
 	parser.add("-i", "--in", true);
 	parser.add("-o", "--out", true);
     parser.add("-f", "--follow", false);
@@ -548,6 +556,8 @@ int main(int argc, char **argv)
 				optCompressed = true;
             } else if(optArg.equals("-u", "--uncompressed")) {
                 optUncompressed = true;
+	    } else if(optArg.equals("-r", "--random")) {
+                _config.randomMode = true;
             } else if(optArg.equals("", "--compression")) {
                 _config.compression = parseCompressionString(optArg.arg);
 			} else if(optArg.equals("-i", "--in")) {
@@ -610,6 +620,11 @@ int main(int argc, char **argv)
 			return 1;
 		}
 	}
+	
+        if (optContinue && _config.randomMode) {
+        Logger::log(LogLevel::Error, "Random and continue mode cannot be used together.");
+        return 1;	
+        }
 
     if(listDevices) {
         printDeviceList(_devices);
