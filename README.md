@@ -2,6 +2,8 @@ I have absolutely no idea what I'm doing. The edits to this repo are for CUDA on
 
 Contains tweaks from the following forks: ByLamacq, Radrigo, frstrtr (not implemented in .exe; you'll have to rename main_alt to main and compile), L0laapk3
 
+This branch incorporates the now-deleted pikachunakapika fork containing random mode along with the other tweaks. I found the source in the closed pull request in the original brichard19 repo. 
+
 # BitCrack
 
 A tool for brute-forcing Bitcoin private keys. The main purpose of this project is to contribute to the effort of solving the [Bitcoin puzzle transaction](https://blockchain.info/tx/08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15): A transaction with 32 addresses that become increasingly difficult to crack.
@@ -45,6 +47,9 @@ Options:
 
 -p, --points NUMBER
     Each thread will process NUMBER keys at a time
+    
+-r, --random
+    Each point will start in random KEYSPACE
 
 --keyspace KEYSPACE
     Specify the range of keys to search, where KEYSPACE is in the format,
