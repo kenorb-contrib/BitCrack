@@ -2,7 +2,7 @@ I have absolutely no idea what I'm doing. The edits to this repo are for CUDA on
 
 Contains tweaks from the following forks: ByLamacq, Radrigo, frstrtr (not implemented in .exe; you'll have to rename main_alt to main and compile), L0laapk3
 
-This branch incorporates the now-deleted pikachunakapika fork containing random mode along with the other tweaks. I found the source in the closed pull request in the original brichard19 repo. 
+This branch incorporates the now-deleted pikachunakapika fork containing random mode along with the other tweaks. I found the source in the closed pull request in the original brichard19 repo. https://github.com/brichard19/BitCrack/pull/148/files
 
 # BitCrack
 
