@@ -1,5 +1,7 @@
 I have absolutely no idea what I'm doing. The edits to this repo are for CUDA only. Borrowing from various other tweaks found in the mass of forks for BitCrack. No clue if they'll even work or not. . . Let's find out! - DL
 
+Contains tweaks from the following forks: ByLamacq, Radrigo, frstrtr (not implemented in .exe; you'll have to rename main_alt to main and compile), L0laapk3
+
 # BitCrack
 
 A tool for brute-forcing Bitcoin private keys. The main purpose of this project is to contribute to the effort of solving the [Bitcoin puzzle transaction](https://blockchain.info/tx/08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15): A transaction with 32 addresses that become increasingly difficult to crack.
