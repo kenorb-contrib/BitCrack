@@ -1,8 +1,8 @@
 I have absolutely no idea what I'm doing. The edits to this repo are for CUDA only. Borrowing from various other tweaks found in the mass of forks for BitCrack. No clue if they'll even work or not. . . Let's find out! - DL
 
-Contains tweaks from the following forks: ByLamacq, Radrigo, frstrtr (not implemented in .exe; you'll have to rename main_alt to main and compile), L0laapk3
+Contains tweaks from the following forks: ByLamacq, Radrigo, frstrtr (not implemented in .exe; you'll have to rename main_alt to main and compile), L0laapk3, and any others that have made apparent improvements to the original by brichard19. All of you are wizards and I bow to your superior abilities!
 
-This branch incorporates the now-deleted pikachunakapika fork containing random mode along with the other tweaks. I found the source in the closed pull request in the original brichard19 repo. https://github.com/brichard19/BitCrack/pull/148/files
+This code also incorporates the popular but now removed pikachunakapika fork containing random mode along with the other tweaks. I found the source in the closed pull request in the original brichard19 repo. https://github.com/brichard19/BitCrack/pull/148/files
 
 # BitCrack
 
