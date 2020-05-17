@@ -3,7 +3,7 @@
 
 RAND=$(xxd -p -c 32 -l 32 /dev/urandom)
 
-BTC_LIST=$HOME/btc/blockchair_bitcoin_addresses_latest_15_05_2020.tsv-sorted
+BTC_LIST=$HOME/btc/blockchair_bitcoin_addresses_latest_16_05_2020.tsv-sorted
 BTC_DIR=$HOME/btc/BTC-CRACK-RESULT
 BTC_RESULT=$BTC_DIR/BTC_FIND_ADDRESS
 
