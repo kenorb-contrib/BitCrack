@@ -8,5 +8,5 @@ BTC_RESULT=/home/elpadre/_BTC_FIND_
 
 ./bin/cuBitCrack -i $BTC_LIST \
                  -o $BTC_RESULT -d 0 \
-                 -b 32 -t 64 -p 16 \
+                 -b 32 -t 64 -p 32 \
                  --keyspace $RAND:+2540BE400
