@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
 
 import bitcoin
+import argparse
+
+
+def cmdline_args():
+    p = argparse.ArgumentParser(description=
+        """
+            Wifs BTC creator        
+        """, 
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    p.add_argument('HexSecKey', help=None,
+                   nargs=None, const=None, default=None,
+                   type=None, choices=None, metavar=None)
+    p.epilog = None
+    return p.parse_args()
+
+args = cmdline_args();
 
 # Generate a random private key
 valid_private_key = False
 while not valid_private_key:
-    private_key = bitcoin.random_key()
+    if args.HexSecKey:
+        private_key = args.HexSecKey
+    else:
+        private_key = bitcoin.random_key()
     decoded_private_key = bitcoin.decode_privkey(private_key, 'hex')
     valid_private_key =  0 < decoded_private_key < bitcoin.N
 
