@@ -9,6 +9,8 @@ CLKeySearchDevice/bitcrack.cl
 CLKeySearchDevice/bitcrack_cl.cpp
 CLUnitTests/test.cpp
 CLUnitTests/test.cl
+lib/*
+*.bin
 
 # Linux build results
 *.o
