@@ -3,8 +3,13 @@
 
 RAND=$(xxd -p -c 32 -l 32 /dev/urandom)
 
-BTC_LIST=/home/elpadre/btc/blockchair_bitcoin_addresses_latest_15_05_2020.tsv-sorted
-BTC_RESULT=/home/elpadre/BTC_FIND_ADDRESS
+BTC_LIST=$HOME/btc/blockchair_bitcoin_addresses_latest_15_05_2020.tsv-sorted
+BTC_DIR=$HOME/btc/BTC-CRACK-RESULT
+BTC_RESULT=$BTC_DIR/BTC_FIND_ADDRESS
+
+if [[ ! -d "$BTC_DIR" ]]; then
+    mkdir -p "$BTC_DIR"
+fi
 
 # 0x2540BE400 - 10 000 000 000 
 # 0x4A817C800 - 20 000 000 000
