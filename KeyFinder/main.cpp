@@ -28,6 +28,9 @@ typedef struct RunConfig {
     secp256k1::uint256 startKey = 1;
     secp256k1::uint256 nextKey = 1;
 
+    // How many keys to skip when starting, use a sensible default
+    secp256k1::uint256 skipKeys = 0;
+
     // The last key to be checked
     secp256k1::uint256 endKey = secp256k1::N - 1;
 
@@ -212,6 +215,7 @@ void usage()
     printf("                          :END\n"); 
     printf("                          :+COUNT\n");
     printf("                        Where START, END, COUNT are in hex format\n");
+    printf("--skip N                Skip N keys before starting to search\n");
     printf("--stride N              Increment by N keys at a time\n");
     printf("--share M/N             Divide the keyspace into N equal shares, process the Mth share\n");
     printf("--continue FILE         Save/load progress from FILE\n");
@@ -375,6 +379,9 @@ int run()
 
     Logger::log(LogLevel::Info, "Compression: " + getCompressionString(_config.compression));
     Logger::log(LogLevel::Info, "Starting at: " + _config.nextKey.toString());
+    if (!_config.skipKeys.isZero()) {
+    Logger::log(LogLevel::Info, "Skipping   : " + _config.skipKeys.toString());
+    }
     Logger::log(LogLevel::Info, "Ending at:   " + _config.endKey.toString());
     Logger::log(LogLevel::Info, "Counting by: " + _config.stride.toString());
 
@@ -401,7 +408,7 @@ int run()
         // Get device context
         KeySearchDevice *d = getDeviceContext(_devices[_config.device], _config.blocks, _config.threads, _config.pointsPerThread);
 
-        KeyFinder f(_config.nextKey, _config.endKey, _config.compression, d, _config.stride);
+        KeyFinder f(_config.nextKey, _config.endKey, _config.compression, d, _config.stride, _config.skipKeys);
 
         f.setResultCallback(resultCallback);
         f.setStatusInterval(_config.statusInterval);
@@ -517,6 +524,7 @@ int main(int argc, char **argv)
     parser.add("", "--continue", true);
     parser.add("", "--share", true);
     parser.add("", "--stride", true);
+    parser.add("", "--skip", true);
 
     try {
         parser.parse(argc, argv);
@@ -557,6 +565,8 @@ int main(int argc, char **argv)
                 listDevices = true;
             } else if(optArg.equals("", "--continue")) {
                 _config.checkpointFile = optArg.arg;
+            } else if (optArg.equals("", "--skip")) {
+                _config.skipKeys = secp256k1::uint256(optArg.arg);
             } else if(optArg.equals("", "--keyspace")) {
                 secp256k1::uint256 start;
                 secp256k1::uint256 end;

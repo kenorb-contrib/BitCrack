@@ -28,6 +28,7 @@ private:
 
     secp256k1::uint256 _startKey;
     secp256k1::uint256 _endKey;
+	secp256k1::uint256 _skipKeys;
 
 	// Each index of each thread gets a flag to indicate if it found a valid hash
 	bool _running;
@@ -45,7 +46,7 @@ private:
 
 public:
 
-    KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint256 &endKey, int compression, KeySearchDevice* device, const secp256k1::uint256 &stride);
+    KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint256 &endKey, int compression, KeySearchDevice* device, const secp256k1::uint256 &stride, const secp256k1::uint256 &skip);
 
 	~KeyFinder();
 
