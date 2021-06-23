@@ -22,9 +22,10 @@ CUDA_INCLUDE=${CUDA_HOME}/include
 CUDA_MATH=$(CUR_DIR)/cudaMath
 
 # OpenCL variables
-OPENCL_LIB=${CUDA_LIB}
-OPENCL_INCLUDE=${CUDA_INCLUDE}
-OPENCL_VERSION=110
+OPENCL_HOME=/opt/rocm/opencl
+OPENCL_LIB=${OPENCL_HOME}/lib
+OPENCL_INCLUDE=${OPENCL_HOME}/include
+OPENCL_VERSION=120
 
 export INCLUDE
 export LIBDIR
@@ -109,6 +110,7 @@ dir_logger:
 
 dir_addrgen:	dir_cmdparse dir_addressutil dir_secp256k1lib
 	make --directory AddrGen
+
 dir_clunittest:	dir_clutil
 	make --directory CLUnitTests
 
