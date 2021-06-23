@@ -8,11 +8,11 @@
 #include "clutil.h"
 #endif
 
-std::vector<DeviceManager::DeviceInfo> DeviceManager::getDevices()
+std::vector <DeviceManager::DeviceInfo> DeviceManager::getDevices()
 {
     int deviceId = 0;
 
-    std::vector<DeviceManager::DeviceInfo> devices;
+    std::vector <DeviceManager::DeviceInfo> devices;
 
 #ifdef BUILD_CUDA
     // Get CUDA devices

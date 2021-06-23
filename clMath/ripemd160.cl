@@ -1,13 +1,12 @@
 #ifndef _RIPEMD160_CL
 #define _RIPEMD160_CL
 
-
 __constant unsigned int _RIPEMD160_IV[5] = {
-    0x67452301,
-    0xefcdab89,
-    0x98badcfe,
-    0x10325476,
-    0xc3d2e1f0
+        0x67452301,
+        0xefcdab89,
+        0x98badcfe,
+        0x10325476,
+        0xc3d2e1f0
 };
 
 __constant unsigned int _K0 = 0x5a827999;
@@ -81,7 +80,6 @@ __constant unsigned int _K7 = 0x50a28be6;
     a += J((b), (c), (d)) + (x) + _K7;\
     a = rotl((a), (s)) + (e);\
     c = rotl((c), 10)
-
 
 void ripemd160sha256(const unsigned int x[8], unsigned int digest[5])
 {
@@ -287,7 +285,6 @@ void ripemd160sha256(const unsigned int x[8], unsigned int digest[5])
     digest[4] = _RIPEMD160_IV[0] + b1 + c2;
 }
 
-
 void ripemd160sha256NoFinal(const unsigned int x[8], unsigned int digest[5])
 {
     unsigned int a1 = _RIPEMD160_IV[0];
@@ -491,4 +488,5 @@ void ripemd160sha256NoFinal(const unsigned int x[8], unsigned int digest[5])
     digest[3] = a1 + b2;
     digest[4] = b1 + c2;
 }
+
 #endif

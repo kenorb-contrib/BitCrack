@@ -1,5 +1,7 @@
 #include <iostream>
 #include <string>
+#include <time.h>
+
 #include "secp256k1.h"
 #include "util.h"
 #include "AddressUtil.h"
@@ -7,75 +9,78 @@
 
 int main(int argc, char **argv)
 {
-    std::vector<secp256k1::uint256> keys;
+    std::vector <secp256k1::uint256> keys;
 
-	bool compressed = true;
+    clock_t start, end;
+
+    bool compressed = true;
     bool printPrivate = false;
     bool printPublic = false;
     bool printAddr = false;
     bool printAll = true;
     int count = 1;
 
-	secp256k1::uint256 k;
+    secp256k1::uint256 k;
 
-	k = secp256k1::generatePrivateKey();
+    k = secp256k1::generatePrivateKey();
 
-	CmdParse parser;
+    CmdParse parser;
 
-	parser.add("-c", "--compressed", false);
-	parser.add("-u", "--uncompressed", false);
+    parser.add("-c", "--compressed", false);
+    parser.add("-u", "--uncompressed", false);
     parser.add("-p", "--pub", false);
     parser.add("-k", "--priv", false);
     parser.add("-a", "--addr", false);
     parser.add("-n", true);
 
-	parser.parse(argc, argv);
+    parser.parse(argc, argv);
 
-	std::vector<OptArg> args = parser.getArgs();
+    std::vector <OptArg> args = parser.getArgs();
 
-	for(unsigned int i = 0; i < args.size(); i++) {
-		OptArg arg = args[i];
-		
-		if(arg.equals("-c", "--compressed")) {
-			compressed = true;
-		} else if(arg.equals("-u", "--uncompressed")) {
-			compressed = false;
-        } else if(arg.equals("-k", "--priv")) {
+    for (unsigned int i = 0; i < args.size(); i++) {
+        OptArg arg = args[i];
+
+        if (arg.equals("-c", "--compressed")) {
+            compressed = true;
+        } else if (arg.equals("-u", "--uncompressed")) {
+            compressed = false;
+        } else if (arg.equals("-k", "--priv")) {
             printAll = false;
             printPrivate = true;
-        } else if(arg.equals("-p", "--pub")) {
+        } else if (arg.equals("-p", "--pub")) {
             printAll = false;
             printPublic = true;
-        } else if(arg.equals("-a", "--addr")) {
+        } else if (arg.equals("-a", "--addr")) {
             printAll = false;
             printAddr = true;
-        } else if(arg.equals("-n")) {
-            count = (int)util::parseUInt32(arg.arg);
+        } else if (arg.equals("-n")) {
+            count = (int) util::parseUInt32(arg.arg);
         }
-	}
+    }
 
-	std::vector<std::string> operands = parser.getOperands();
+    std::vector <std::string> operands = parser.getOperands();
 
-	if(operands.size() > 0) {
-        for(int i = 0; i < operands.size(); i++) {
+    if (operands.size() > 0) {
+        for (int i = 0; i < operands.size(); i++) {
             try {
                 keys.push_back(secp256k1::uint256(operands[i]));
-            } catch(std::string err) {
+            } catch (std::string err) {
                 printf("Error parsing private key: %s\n", err.c_str());
                 return 1;
             }
         }
     } else {
-        for(int i = 0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             keys.push_back(secp256k1::generatePrivateKey());
         }
     }
 
-    for(int i = 0; i < keys.size(); i++) {
+    start = clock();
+
+    for (int i = 0; i < keys.size(); i++) {
         secp256k1::uint256 k = keys[i];
 
-        if(k.isZero() || k.cmp(secp256k1::N) >= 0)
-        {
+        if (k.isZero() || k.cmp(secp256k1::N) >= 0) {
             printf("Error parsing private key: Private key is out of range\n");
 
             return 1;
@@ -84,16 +89,19 @@ int main(int argc, char **argv)
         secp256k1::ecpoint p = secp256k1::multiplyPoint(k, secp256k1::G());
         std::string address = Address::fromPublicKey(p, compressed);
 
-        if(printAll || printPrivate) {
+        if (printAll || printPrivate) {
             std::cout << k.toString() << std::endl;
         }
-        if(printAll || printPublic) {
+        if (printAll || printPublic) {
             std::cout << p.toString() << std::endl;
         }
-        if(printAll || printAddr) {
+        if (printAll || printAddr) {
             std::cout << address << std::endl;
         }
     }
 
-	return 0;
+    end = clock();
+    std::cout << " Total taken : " << double(end - start) / double(CLOCKS_PER_SEC) << " s" << std::endl;
+
+    return 0;
 }

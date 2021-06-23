@@ -6,33 +6,33 @@
 class CudaHashLookup {
 
 private:
-	unsigned int *_bloomFilterPtr;
+    unsigned int *_bloomFilterPtr;
 
-	cudaError_t setTargetBloomFilter(const std::vector<struct hash160> &targets);
-	
-	cudaError_t setTargetConstantMemory(const std::vector<struct hash160> &targets);
-	
-	unsigned int getOptimalBloomFilterBits(double p, size_t n);
+    cudaError_t setTargetBloomFilter(const std::vector<struct hash160> &targets);
 
-	void cleanup();
+    cudaError_t setTargetConstantMemory(const std::vector<struct hash160> &targets);
 
-	void initializeBloomFilter(const std::vector<struct hash160> &targets, unsigned int *filter, unsigned int mask);
-	
-	void initializeBloomFilter64(const std::vector<struct hash160> &targets, unsigned int *filter, unsigned long long mask);
+    unsigned int getOptimalBloomFilterBits(double p, size_t n);
+
+    void cleanup();
+
+    void initializeBloomFilter(const std::vector<struct hash160> &targets, unsigned int *filter, unsigned int mask);
+
+    void initializeBloomFilter64(const std::vector<struct hash160> &targets, unsigned int *filter, unsigned long long mask);
 
 public:
 
-	CudaHashLookup()
-	{
-		_bloomFilterPtr = NULL;
-	}
+    CudaHashLookup()
+    {
+        _bloomFilterPtr = NULL;
+    }
 
-	~CudaHashLookup()
-	{
-		cleanup();
-	}
+    ~CudaHashLookup()
+    {
+        cleanup();
+    }
 
-	cudaError_t setTargets(const std::vector<struct hash160> &targets);
+    cudaError_t setTargets(const std::vector<struct hash160> &targets);
 };
 
 #endif

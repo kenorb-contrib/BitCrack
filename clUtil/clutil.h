@@ -5,7 +5,9 @@
 #define CL_SILENCE_DEPRECATION
 #include <OpenCL/opencl.h>
 #else
+
 #include <CL/cl.h>
+
 #endif
 
 #include <string>
@@ -19,8 +21,7 @@ namespace cl {
         int cores;
         uint64_t mem;
         std::string name;
-
-    }CLDeviceInfo;
+    } CLDeviceInfo;
 
     class CLException {
     public:
@@ -42,12 +43,11 @@ namespace cl {
 
     CLDeviceInfo getDeviceInfo(int device);
 
-    std::vector<CLDeviceInfo> getDevices();
+    std::vector <CLDeviceInfo> getDevices();
 
     int getDeviceCount();
 
     void clCall(cl_int err);
-
 }
 
 #endif

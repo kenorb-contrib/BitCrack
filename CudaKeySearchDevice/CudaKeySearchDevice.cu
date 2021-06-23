@@ -23,37 +23,35 @@ __constant__ unsigned int *_CHAIN[1];
 
 static unsigned int *_chainBufferPtr = NULL;
 
-
 __device__ void doRMD160FinalRound(const unsigned int hIn[5], unsigned int hOut[5])
 {
     const unsigned int iv[5] = {
-        0x67452301,
-        0xefcdab89,
-        0x98badcfe,
-        0x10325476,
-        0xc3d2e1f0
+            0x67452301,
+            0xefcdab89,
+            0x98badcfe,
+            0x10325476,
+            0xc3d2e1f0
     };
 
-    for(int i = 0; i < 5; i++) {
+    for (int i = 0; i < 5; i++) {
         hOut[i] = endian(hIn[i] + iv[(i + 1) % 5]);
     }
 }
 
-
 /**
  * Allocates device memory for storing the multiplication chain used in
- the batch inversion operation
+ * the batch inversion operation
  */
 cudaError_t allocateChainBuf(unsigned int count)
 {
     cudaError_t err = cudaMalloc(&_chainBufferPtr, count * sizeof(unsigned int) * 8);
 
-    if(err) {
+    if (err) {
         return err;
     }
 
     err = cudaMemcpyToSymbol(_CHAIN, &_chainBufferPtr, sizeof(unsigned int *));
-    if(err) {
+    if (err) {
         cudaFree(_chainBufferPtr);
     }
 
@@ -62,14 +60,14 @@ cudaError_t allocateChainBuf(unsigned int count)
 
 void cleanupChainBuf()
 {
-    if(_chainBufferPtr != NULL) {
+    if (_chainBufferPtr != NULL) {
         cudaFree(_chainBufferPtr);
         _chainBufferPtr = NULL;
     }
 }
 
 /**
- *Sets the EC point which all points will be incremented by
+ * Sets the EC point which all points will be incremented by
  */
 cudaError_t setIncrementorPoint(const secp256k1::uint256 &x, const secp256k1::uint256 &y)
 {
@@ -80,14 +78,12 @@ cudaError_t setIncrementorPoint(const secp256k1::uint256 &x, const secp256k1::ui
     y.exportWords(yWords, 8, secp256k1::uint256::BigEndian);
 
     cudaError_t err = cudaMemcpyToSymbol(_INC_X, xWords, sizeof(unsigned int) * 8);
-    if(err) {
+    if (err) {
         return err;
     }
 
     return cudaMemcpyToSymbol(_INC_Y, yWords, sizeof(unsigned int) * 8);
 }
-
-
 
 __device__ void hashPublicKey(const unsigned int *x, const unsigned int *y, unsigned int *digestOut)
 {
@@ -96,7 +92,7 @@ __device__ void hashPublicKey(const unsigned int *x, const unsigned int *y, unsi
     sha256PublicKey(x, y, hash);
 
     // Swap to little-endian
-    for(int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
         hash[i] = endian(hash[i]);
     }
 
@@ -110,13 +106,12 @@ __device__ void hashPublicKeyCompressed(const unsigned int *x, unsigned int yPar
     sha256PublicKeyCompressed(x, yParity, hash);
 
     // Swap to little-endian
-    for(int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
         hash[i] = endian(hash[i]);
     }
 
     ripemd160sha256NoFinal(hash, digestOut);
 }
-
 
 __device__ void setResultFound(int idx, bool compressed, unsigned int x[8], unsigned int y[8], unsigned int digest[5])
 {
@@ -127,7 +122,7 @@ __device__ void setResultFound(int idx, bool compressed, unsigned int x[8], unsi
     r.idx = idx;
     r.compressed = compressed;
 
-    for(int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++) {
         r.x[i] = x[i];
         r.y[i] = y[i];
     }
@@ -144,29 +139,29 @@ __device__ void doIteration(int pointsPerThread, int compression)
     unsigned int *yPtr = ec::getYPtr();
 
     // Multiply together all (_Gx - x) and then invert
-    unsigned int inverse[8] = {0,0,0,0,0,0,0,1};
-    for(int i = 0; i < pointsPerThread; i++) {
+    unsigned int inverse[8] = {0, 0, 0, 0, 0, 0, 0, 1};
+    for (int i = 0; i < pointsPerThread; i++) {
         unsigned int x[8];
 
         unsigned int digest[5];
 
         readInt(xPtr, i, x);
 
-        if(compression == PointCompressionType::UNCOMPRESSED || compression == PointCompressionType::BOTH) {
+        if (compression == PointCompressionType::UNCOMPRESSED || compression == PointCompressionType::BOTH) {
             unsigned int y[8];
             readInt(yPtr, i, y);
 
             hashPublicKey(x, y, digest);
 
-            if(checkHash(digest)) {
+            if (checkHash(digest)) {
                 setResultFound(i, false, x, y, digest);
             }
         }
 
-        if(compression == PointCompressionType::COMPRESSED || compression == PointCompressionType::BOTH) {
+        if (compression == PointCompressionType::COMPRESSED || compression == PointCompressionType::BOTH) {
             hashPublicKeyCompressed(x, readIntLSW(yPtr, i), digest);
 
-            if(checkHash(digest)) {
+            if (checkHash(digest)) {
                 unsigned int y[8];
                 readInt(yPtr, i, y);
                 setResultFound(i, true, x, y, digest);
@@ -178,7 +173,7 @@ __device__ void doIteration(int pointsPerThread, int compression)
 
     doBatchInverse(inverse);
 
-    for(int i = pointsPerThread - 1; i >= 0; i--) {
+    for (int i = pointsPerThread - 1; i >= 0; i--) {
 
         unsigned int newX[8];
         unsigned int newY[8];
@@ -197,8 +192,8 @@ __device__ void doIterationWithDouble(int pointsPerThread, int compression)
     unsigned int *yPtr = ec::getYPtr();
 
     // Multiply together all (_Gx - x) and then invert
-    unsigned int inverse[8] = {0,0,0,0,0,0,0,1};
-    for(int i = 0; i < pointsPerThread; i++) {
+    unsigned int inverse[8] = {0, 0, 0, 0, 0, 0, 0, 1};
+    for (int i = 0; i < pointsPerThread; i++) {
         unsigned int x[8];
 
         unsigned int digest[5];
@@ -206,22 +201,22 @@ __device__ void doIterationWithDouble(int pointsPerThread, int compression)
         readInt(xPtr, i, x);
 
         // uncompressed
-        if(compression == PointCompressionType::UNCOMPRESSED || compression == PointCompressionType::BOTH) {
+        if (compression == PointCompressionType::UNCOMPRESSED || compression == PointCompressionType::BOTH) {
             unsigned int y[8];
             readInt(yPtr, i, y);
             hashPublicKey(x, y, digest);
 
-            if(checkHash(digest)) {
+            if (checkHash(digest)) {
                 setResultFound(i, false, x, y, digest);
             }
         }
 
         // compressed
-        if(compression == PointCompressionType::COMPRESSED || compression == PointCompressionType::BOTH) {
+        if (compression == PointCompressionType::COMPRESSED || compression == PointCompressionType::BOTH) {
 
             hashPublicKeyCompressed(x, readIntLSW(yPtr, i), digest);
 
-            if(checkHash(digest)) {
+            if (checkHash(digest)) {
 
                 unsigned int y[8];
                 readInt(yPtr, i, y);
@@ -235,7 +230,7 @@ __device__ void doIterationWithDouble(int pointsPerThread, int compression)
 
     doBatchInverse(inverse);
 
-    for(int i = pointsPerThread - 1; i >= 0; i--) {
+    for (int i = pointsPerThread - 1; i >= 0; i--) {
 
         unsigned int newX[8];
         unsigned int newY[8];
@@ -248,8 +243,8 @@ __device__ void doIterationWithDouble(int pointsPerThread, int compression)
 }
 
 /**
-* Performs a single iteration
-*/
+ * Performs a single iteration
+ */
 __global__ void keyFinderKernel(int points, int compression)
 {
     doIteration(points, compression);

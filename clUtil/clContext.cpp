@@ -15,7 +15,10 @@ cl::CLContext::CLContext(cl_device_id device)
     _ctx = clCreateContext(0, 1, &_device, NULL, NULL, &err);
     clCall(err);
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     _queue = clCreateCommandQueue(_ctx, _device, 0, &err);
+#pragma clang diagnostic pop
     clCall(err);
 }
 
@@ -56,7 +59,7 @@ void cl::CLContext::free(cl_mem mem)
 
 void cl::CLContext::copyHostToDevice(const void *hostPtr, cl_mem devicePtr, size_t size)
 {
-   clCall(clEnqueueWriteBuffer(_queue, devicePtr, CL_TRUE, 0, size, hostPtr, 0, NULL, NULL));
+    clCall(clEnqueueWriteBuffer(_queue, devicePtr, CL_TRUE, 0, size, hostPtr, 0, NULL, NULL));
 }
 
 void cl::CLContext::copyHostToDevice(const void *hostPtr, cl_mem devicePtr, size_t offset, size_t size)
@@ -93,7 +96,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, std::string srcFile, std::string op
     size_t len = src.length();
     cl_int err;
 
-    if(util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
+    if (util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
         options += "-DDEVICE_VENDOR_INTEL";
     }
 
@@ -102,7 +105,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, std::string srcFile, std::string op
 
     err = clBuildProgram(_prog, 0, NULL, options.c_str(), NULL, NULL);
 
-    if(err == CL_BUILD_PROGRAM_FAILURE) {
+    if (err == CL_BUILD_PROGRAM_FAILURE) {
         size_t logSize;
         clGetProgramBuildInfo(_prog, ctx.getDevice(), CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
 
@@ -122,7 +125,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, const char *src, std::string option
     size_t len = strlen(src);
     cl_int err;
 
-    if(util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
+    if (util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
         options += " -DDEVICE_VENDOR_INTEL";
     }
 
@@ -131,7 +134,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, const char *src, std::string option
 
     err = clBuildProgram(_prog, 0, NULL, options.c_str(), NULL, NULL);
 
-    if(err == CL_BUILD_PROGRAM_FAILURE) {
+    if (err == CL_BUILD_PROGRAM_FAILURE) {
         size_t logSize;
         clGetProgramBuildInfo(_prog, ctx.getDevice(), CL_PROGRAM_BUILD_LOG, 0, NULL, &logSize);
 
@@ -149,7 +152,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, const char *src, std::string option
 std::string cl::CLProgram::loadSource(std::string srcFile)
 {
     std::ifstream f(srcFile);
-    if(!f.good()) {
+    if (!f.good()) {
         throw CLException(CL_BUILD_PROGRAM_FAILURE, "'" + srcFile + "' not found");
     }
 
@@ -188,7 +191,7 @@ std::string cl::CLContext::getDeviceName()
 
 std::string cl::CLContext::getDeviceVendor()
 {
-    char name[128] = { 0 };
+    char name[128] = {0};
 
     clCall(clGetDeviceInfo(_device, CL_DEVICE_VENDOR, sizeof(name), name, NULL));
 
@@ -201,27 +204,26 @@ int cl::CLContext::get_mp_count()
 
     clCall(clGetDeviceInfo(_device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(count), &count, NULL));
 
-    return (int)count;
+    return (int) count;
 }
 
 // TODO: This is for 1 dimension only
 int cl::CLContext::get_max_block_size()
 {
-    size_t count[3] = { 1,1,1 };
+    size_t count[3] = {1, 1, 1};
     size_t max_items = 1;
 
     clCall(clGetDeviceInfo(_device, CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(count), &count, NULL));
 
     clCall(clGetDeviceInfo(_device, CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(max_items), &max_items, NULL));
 
-    return (int)std::min(count[0], max_items);
+    return (int) std::min(count[0], max_items);
 }
 
 cl::CLProgram::~CLProgram()
 {
     clReleaseProgram(_prog);
 }
-
 
 cl::CLKernel::CLKernel(cl::CLProgram &prog, std::string entry) : _prog(prog)
 {

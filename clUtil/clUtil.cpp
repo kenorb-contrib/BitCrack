@@ -1,23 +1,21 @@
 #include "clutil.h"
 
-
 void cl::clCall(cl_int err)
 {
-    if(err != CL_SUCCESS) {
+    if (err != CL_SUCCESS) {
         throw cl::CLException(err);
     }
 }
 
-
-std::vector<cl::CLDeviceInfo> cl::getDevices()
+std::vector <cl::CLDeviceInfo> cl::getDevices()
 {
-    std::vector<cl::CLDeviceInfo> deviceList;
+    std::vector <cl::CLDeviceInfo> deviceList;
 
     cl_uint platformCount = 0;
 
     clCall(clGetPlatformIDs(0, NULL, &platformCount));
 
-    if(platformCount == 0) {
+    if (platformCount == 0) {
         return deviceList;
     }
 
@@ -25,19 +23,19 @@ std::vector<cl::CLDeviceInfo> cl::getDevices()
 
     clCall(clGetPlatformIDs(platformCount, platforms, NULL));
 
-    for(cl_uint i = 0; i < platformCount; i++) {
-        
+    for (cl_uint i = 0; i < platformCount; i++) {
+
         cl_uint deviceCount = 0;
         clCall(clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, 0, NULL, &deviceCount));
 
-        if(deviceCount == 0) {
+        if (deviceCount == 0) {
             continue;
         }
 
         cl_device_id* devices = new cl_device_id[deviceCount];
         clCall(clGetDeviceIDs(platforms[i], CL_DEVICE_TYPE_ALL, deviceCount, devices, NULL));
 
-        for(cl_uint j = 0; j < deviceCount; j++) {
+        for (cl_uint j = 0; j < deviceCount; j++) {
             char buf[256] = {0};
 
             cl::CLDeviceInfo info;
@@ -55,7 +53,7 @@ std::vector<cl::CLDeviceInfo> cl::getDevices()
             cl_ulong mem;
             clCall(clGetDeviceInfo(devices[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(mem), &mem, NULL));
 
-            info.mem = (uint64_t)mem;
+            info.mem = (uint64_t) mem;
             info.id = devices[j];
             deviceList.push_back(info);
         }

@@ -1,4 +1,3 @@
-
 #include <vector>
 #include <iostream>
 #include "clutil.h"
@@ -9,13 +8,14 @@
 #define SECTION_INVERSE 2
 
 std::string _sections[] = {
-    "Addition",
-    "Multiplication",
-    "Inverse" };
+        "Addition",
+        "Multiplication",
+        "Inverse"
+};
 
 typedef struct {
     int section;
-}CLErrorInfo;
+} CLErrorInfo;
 
 extern char _secp256k1_test_cl[];
 
@@ -36,18 +36,18 @@ int runTest(cl_device_id deviceId)
     k.call(1, 1);
 
     unsigned int numErrors = 0;
-    std::vector<CLErrorInfo> errors;
+    std::vector <CLErrorInfo> errors;
 
     ctx.copyDeviceToHost(devNumErrors, &numErrors, sizeof(unsigned int));
 
     std::cout << numErrors << " errors" << std::endl;
 
-    if(numErrors > 0) {
+    if (numErrors > 0) {
         errors.resize(numErrors);
 
         ctx.copyDeviceToHost(devErrors, errors.data(), sizeof(CLErrorInfo) * numErrors);
 
-        for(int i = 0; i < numErrors; i++) {
+        for (int i = 0; i < numErrors; i++) {
             std::cout << _sections[errors[i].section] << " test failed" << std::endl;
         }
 
@@ -62,40 +62,39 @@ int runTest(cl_device_id deviceId)
 
 int main(int argc, char **argv)
 {
-    std::vector<cl::CLDeviceInfo> devices;
+    std::vector <cl::CLDeviceInfo> devices;
 
     try {
         devices = cl::getDevices();
-    }catch(cl::CLException ex) {
+    } catch (cl::CLException ex) {
         std::cout << "Error: " << ex.msg << std::endl;
         return 1;
     }
 
     std::cout << "Found " << devices.size() << " devices" << std::endl;
 
-    if(devices.size() == 0) {
+    if (devices.size() == 0) {
         std::cout << "No OpenCL devices found" << std::endl;
         return 0;
     }
 
     int numErrors = 0;
 
-    for(int i = 0; i < devices.size(); i++) {
+    for (int i = 0; i < devices.size(); i++) {
         try {
             std::cout << "Testing device " << devices[i].name << std::endl;
             numErrors += runTest(devices[i].id);
         }
-        catch(cl::CLException ex) {
+        catch (cl::CLException ex) {
             std::cout << "Error " << ex.msg << std::endl;
         }
     }
 
     std::cout << std::endl;
 
-    if(!numErrors) {
+    if (!numErrors) {
         std::cout << "PASS" << std::endl;
-    }
-    else {
+    } else {
         std::cout << "FAIL" << std::endl;
     }
 

@@ -4,12 +4,11 @@
 #include "KeySearchDevice.h"
 #include "clContext.h"
 
-typedef struct CLTargetList_
-{
+typedef struct CLTargetList_ {
     cl_ulong mask = 0;
     cl_ulong size = 0;
     cl_mem ptr = 0;
-}CLTargetList;
+} CLTargetList;
 
 class CLKeySearchDevice : public KeySearchDevice {
 
@@ -27,10 +26,12 @@ private:
     CLTargetList _deviceTargetList;
 
     secp256k1::uint256 _start;
-    
-    std::vector<hash160> _targetList;
 
-    std::vector<KeySearchResult> _results;
+    secp256k1::uint256 _end;
+
+    std::vector <hash160> _targetList;
+
+    std::vector <KeySearchResult> _results;
 
     int _blocks;
 
@@ -41,6 +42,8 @@ private:
     cl_device_id _device;
 
     int _compression = PointCompressionType::COMPRESSED;
+
+    bool _randomMode = false;
 
     uint64_t _iterations = 0;
 
@@ -62,7 +65,7 @@ private:
     cl_mem _privateKeys = NULL;
 
     cl_mem _xTable = NULL;
-    
+
     cl_mem _yTable = NULL;
 
     cl_mem _deviceResults = NULL;
@@ -84,7 +87,9 @@ private:
     int getIndex(int block, int thread, int idx);
 
     void splatBigInt(unsigned int *dest, int block, int thread, int idx, const secp256k1::uint256 &i);
+
     void splatBigInt(unsigned int *dest, int idx, secp256k1::uint256 &k);
+
     secp256k1::uint256 readBigInt(unsigned int *src, int idx);
 
     void selfTest();
@@ -92,7 +97,9 @@ private:
     bool _useBloomFilter = false;
 
     void setTargetsInternal();
+
     void setTargetsList();
+
     void setBloomFilter();
 
     void getResultsInternal();
@@ -107,23 +114,25 @@ private:
 
     uint64_t getOptimalBloomFilterMask(double p, size_t n);
 
+    std::vector <secp256k1::uint256> exponents;
+
 public:
 
     CLKeySearchDevice(uint64_t device, int threads, int pointsPerThread, int blocks = 0);
+
     ~CLKeySearchDevice();
 
-
     // Initialize the device
-    virtual void init(const secp256k1::uint256 &start, int compression, const secp256k1::uint256 &stride);
+    virtual void init(const secp256k1::uint256 &start, const secp256k1::uint256 &end, int compression, const secp256k1::uint256 &stride, bool randomMode);
 
     // Perform one iteration
     virtual void doStep();
 
     // Tell the device which addresses to search for
-    virtual void setTargets(const std::set<KeySearchTarget> &targets);
+    virtual void setTargets(const std::set <KeySearchTarget> &targets);
 
     // Get the private keys that have been found so far
-    virtual size_t getResults(std::vector<KeySearchResult> &results);
+    virtual size_t getResults(std::vector <KeySearchResult> &results);
 
     // The number of keys searched at each step
     virtual uint64_t keysPerStep();
@@ -138,4 +147,3 @@ public:
 };
 
 #endif
-

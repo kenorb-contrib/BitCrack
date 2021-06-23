@@ -10,7 +10,5 @@ all:
 
 	cp clunittest.bin $(BINDIR)/clunittest
 
-
-
 clean:
 	rm -rf *.a *.o clunittest.bin cltest.cl cltest.cpp

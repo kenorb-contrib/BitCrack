@@ -37,7 +37,7 @@ private:
 
     bool _randomMode = false;
 
-    std::vector<KeySearchResult> _results;
+    std::vector <KeySearchResult> _results;
 
     std::string _deviceName;
 
@@ -58,10 +58,10 @@ private:
 
     void getResultsInternal();
 
-    std::vector<hash160> _targets;
+    std::vector <hash160> _targets;
 
     bool isTargetInList(const unsigned int hash[5]);
-    
+
     void removeTargetFromList(const unsigned int hash[5]);
 
     uint32_t getPrivateKeyOffset(int thread, int block, int point);
@@ -70,7 +70,7 @@ private:
 
     bool verifyKey(const secp256k1::uint256 &privateKey, const secp256k1::ecpoint &publicKey, const unsigned int hash[5], bool compressed);
 
-    std::vector<secp256k1::uint256> exponents;
+    std::vector <secp256k1::uint256> exponents;
 
 public:
 
@@ -80,9 +80,9 @@ public:
 
     virtual void doStep();
 
-    virtual void setTargets(const std::set<KeySearchTarget> &targets);
+    virtual void setTargets(const std::set <KeySearchTarget> &targets);
 
-    virtual size_t getResults(std::vector<KeySearchResult> &results);
+    virtual size_t getResults(std::vector <KeySearchResult> &results);
 
     virtual uint64_t keysPerStep();
 

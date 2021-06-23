@@ -3,9 +3,9 @@
 
 #include <vector>
 #include <set>
+
 #include "secp256k1.h"
 #include "KeySearchTypes.h"
-
 
 class KeySearchException {
 
@@ -24,14 +24,13 @@ public:
     std::string msg;
 };
 
-
 typedef struct {
     std::string address;
     secp256k1::ecpoint publicKey;
     secp256k1::uint256 privateKey;
     unsigned int hash[5];
     bool compressed;
-}KeySearchResult;
+} KeySearchResult;
 
 // Pure virtual class representing a device that performs a key search
 class KeySearchDevice {
@@ -45,10 +44,10 @@ public:
     virtual void doStep() = 0;
 
     // Tell the device which addresses to search for
-    virtual void setTargets(const std::set<KeySearchTarget> &targets) = 0;
+    virtual void setTargets(const std::set <KeySearchTarget> &targets) = 0;
 
     // Get the private keys that have been found so far
-    virtual size_t getResults(std::vector<KeySearchResult> &results) = 0;
+    virtual size_t getResults(std::vector <KeySearchResult> &results) = 0;
 
     // The number of keys searched at each step
     virtual uint64_t keysPerStep() = 0;

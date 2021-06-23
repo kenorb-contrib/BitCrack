@@ -14,10 +14,7 @@ public:
 
     ConfigFileEntry() {}
 
-    ConfigFileEntry(std::string k, std::string v) : key(k), value(v)
-    {
-    }
-
+    ConfigFileEntry(std::string k, std::string v) : key(k), value(v) {}
 };
 
 class ConfigFileReader {
@@ -31,7 +28,8 @@ public:
     ConfigFileReader(const std::string &path);
 
     bool exists();
-    std::map<std::string, ConfigFileEntry> read();
+
+    std::map <std::string, ConfigFileEntry> read();
 };
 
 #endif

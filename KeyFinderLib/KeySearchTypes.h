@@ -1,8 +1,9 @@
 #ifndef _KEY_FINDER_TYPES
 #define _KEY_FINDER_TYPES
 
-#include<stdint.h>
-#include<string>
+#include <stdint.h>
+#include <string>
+
 #include "secp256k1.h"
 
 namespace PointCompressionType {
@@ -21,8 +22,7 @@ typedef struct hash160 {
     {
         memcpy(h, hash, sizeof(unsigned int) * 5);
     }
-}hash160;
-
+} hash160;
 
 typedef struct {
     int device;
@@ -34,8 +34,7 @@ typedef struct {
     uint64_t deviceMemory;
     uint64_t targets;
     secp256k1::uint256 nextKey;
-}KeySearchStatus;
-
+} KeySearchStatus;
 
 class KeySearchTarget {
 
@@ -49,16 +48,15 @@ public:
 
     KeySearchTarget(const unsigned int h[5])
     {
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             value[i] = h[i];
         }
     }
 
-
     bool operator==(const KeySearchTarget &t) const
     {
-        for(int i = 0; i < 5; i++) {
-            if(value[i] != t.value[i]) {
+        for (int i = 0; i < 5; i++) {
+            if (value[i] != t.value[i]) {
                 return false;
             }
         }
@@ -68,10 +66,10 @@ public:
 
     bool operator<(const KeySearchTarget &t) const
     {
-        for(int i = 0; i < 5; i++) {
-            if(value[i] < t.value[i]) {
+        for (int i = 0; i < 5; i++) {
+            if (value[i] < t.value[i]) {
                 return true;
-            } else if(value[i] > t.value[i]) {
+            } else if (value[i] > t.value[i]) {
                 return false;
             }
         }
@@ -81,10 +79,10 @@ public:
 
     bool operator>(const KeySearchTarget &t) const
     {
-        for(int i = 0; i < 5; i++) {
-            if(value[i] > t.value[i]) {
+        for (int i = 0; i < 5; i++) {
+            if (value[i] > t.value[i]) {
                 return true;
-            } else if(value[i] < t.value[i]) {
+            } else if (value[i] < t.value[i]) {
                 return false;
             }
         }

@@ -1,19 +1,21 @@
-#include<stdio.h>
-#include<string>
-#include<fstream>
-#include<vector>
-#include<set>
-#include<algorithm>
+#include <stdio.h>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <algorithm>
 
-#include"util.h"
+#include "util.h"
 
 #ifdef _WIN32
-#include<windows.h>
+#include <windows.h>
 #else
-#include<unistd.h>
-#include<sys/stat.h>
-#include<sys/time.h>
-#include<libgen.h>
+
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <libgen.h>
+
 #endif
 
 namespace util {
@@ -25,7 +27,7 @@ namespace util {
 #else
         struct timeval t;
         gettimeofday(&t, NULL);
-        return (uint64_t)t.tv_sec * 1000 + t.tv_usec / 1000;
+        return (uint64_t) t.tv_sec * 1000 + t.tv_usec / 1000;
 #endif
     }
 
@@ -53,227 +55,226 @@ namespace util {
 #endif
     }
 
-	std::string formatThousands(uint64_t x)
-	{
-		char buf[32] = "";
+    std::string formatThousands(uint64_t x)
+    {
+        char buf[32] = "";
 
-		sprintf(buf, "%lld", x);
+        sprintf(buf, "%lld", x);
 
-		std::string s(buf);
+        std::string s(buf);
 
-		int len = (int)s.length();
+        int len = (int) s.length();
 
-		int numCommas = (len - 1) / 3;
+        int numCommas = (len - 1) / 3;
 
-		if(numCommas == 0) {
-			return s;
-		}
+        if (numCommas == 0) {
+            return s;
+        }
 
-		std::string result = "";
+        std::string result = "";
 
-		int count = ((len % 3) == 0) ? 0 : (3 - (len % 3));
+        int count = ((len % 3) == 0) ? 0 : (3 - (len % 3));
 
-		for(int i = 0; i < len; i++) {
-			result += s[i];
+        for (int i = 0; i < len; i++) {
+            result += s[i];
 
-			if(count++ == 2 && i < len - 1) {
-				result += ",";
-				count = 0;
-			}
-		}
+            if (count++ == 2 && i < len - 1) {
+                result += ",";
+                count = 0;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	uint32_t parseUInt32(std::string s)
-	{
-		return (uint32_t)parseUInt64(s);
-	}
+    uint32_t parseUInt32(std::string s)
+    {
+        return (uint32_t) parseUInt64(s);
+    }
 
-	uint64_t parseUInt64(std::string s)
-	{
-		uint64_t val = 0;
-		bool isHex = false;
+    uint64_t parseUInt64(std::string s)
+    {
+        uint64_t val = 0;
+        bool isHex = false;
 
-		if(s[0] == '0' && s[1] == 'x') {
-			isHex = true;
-			s = s.substr(2);
-		}
-		
-		if(s[s.length() - 1] == 'h') {
-			isHex = true;
-			s = s.substr(0, s.length() - 1);
-		}
+        if (s[0] == '0' && s[1] == 'x') {
+            isHex = true;
+            s = s.substr(2);
+        }
 
-		if(isHex) {
-			if(sscanf(s.c_str(), "%llx", &val) != 1) {
-				throw std::string("Expected an integer");
-			}
-		} else {
-			if(sscanf(s.c_str(), "%lld", &val) != 1) {
-				throw std::string("Expected an integer");
-			}
-		}
+        if (s[s.length() - 1] == 'h') {
+            isHex = true;
+            s = s.substr(0, s.length() - 1);
+        }
 
-		return val;
-	}
+        if (isHex) {
+            if (sscanf(s.c_str(), "%llx", &val) != 1) {
+                throw std::string("Expected an integer");
+            }
+        } else {
+            if (sscanf(s.c_str(), "%lld", &val) != 1) {
+                throw std::string("Expected an integer");
+            }
+        }
 
-	bool isHex(const std::string &s)
-	{
-		int len = 0;
+        return val;
+    }
 
-		for(int i = 0; i < len; i++) {
-			char c = s[i];
+    bool isHex(const std::string &s)
+    {
+        int len = 0;
 
-			if(!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
-				return false;
-			}
-		}
+        for (int i = 0; i < len; i++) {
+            char c = s[i];
 
-		return true;
-	}
+            if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F'))) {
+                return false;
+            }
+        }
 
-	std::string formatSeconds(unsigned int seconds)
-	{
-		char s[128] = { 0 };
+        return true;
+    }
 
-		unsigned int days = seconds / 86400;
-		unsigned int hours = (seconds % 86400) / 3600;
-		unsigned int minutes = (seconds % 3600) / 60;
-		unsigned int sec = seconds % 60;
+    std::string formatSeconds(unsigned int seconds)
+    {
+        char s[128] = {0};
 
-		if(days > 0) {
-			sprintf(s, "%d:%02d:%02d:%02d", days, hours, minutes, sec);
-		} else {
-			sprintf(s, "%02d:%02d:%02d", hours, minutes, sec);
-		}
-		
+        unsigned int days = seconds / 86400;
+        unsigned int hours = (seconds % 86400) / 3600;
+        unsigned int minutes = (seconds % 3600) / 60;
+        unsigned int sec = seconds % 60;
 
-		return std::string(s);
-	}
+        if (days > 0) {
+            sprintf(s, "%d:%02d:%02d:%02d", days, hours, minutes, sec);
+        } else {
+            sprintf(s, "%02d:%02d:%02d", hours, minutes, sec);
+        }
 
-	long getFileSize(const std::string &fileName)
-	{
-		FILE *fp = fopen(fileName.c_str(), "rb");
-		if(fp == NULL) {
-			return -1;
-		}
+        return std::string(s);
+    }
 
-		fseek(fp, 0, SEEK_END);
+    long getFileSize(const std::string &fileName)
+    {
+        FILE *fp = fopen(fileName.c_str(), "rb");
+        if (fp == NULL) {
+            return -1;
+        }
 
-		long pos = ftell(fp);
+        fseek(fp, 0, SEEK_END);
 
-		fclose(fp);
+        long pos = ftell(fp);
 
-		return pos;
-	}
+        fclose(fp);
 
-	bool readLinesFromStream(const std::string &fileName, std::vector<std::string> &lines)
-	{
-		std::ifstream inFile(fileName.c_str());
+        return pos;
+    }
 
-		if(!inFile.is_open()) {
-			return false;
-		}
+    bool readLinesFromStream(const std::string &fileName, std::vector <std::string> &lines)
+    {
+        std::ifstream inFile(fileName.c_str());
 
-		return readLinesFromStream(inFile, lines);
-	}
+        if (!inFile.is_open()) {
+            return false;
+        }
 
-	bool readLinesFromStream(std::istream &in, std::vector<std::string> &lines)
-	{
-		std::string line;
+        return readLinesFromStream(inFile, lines);
+    }
 
-		while(std::getline(in, line)) {
-			if(line.length() > 0) {
-				lines.push_back(line);
-			}
-		}
+    bool readLinesFromStream(std::istream &in, std::vector <std::string> &lines)
+    {
+        std::string line;
 
-		return true;
-	}
+        while (std::getline(in, line)) {
+            if (line.length() > 0) {
+                lines.push_back(line);
+            }
+        }
 
-	bool appendToFile(const std::string &fileName, const std::string &s)
-	{
-		std::ofstream outFile;
-		bool newline = false;
+        return true;
+    }
 
-		if(getFileSize(fileName) > 0) {
-			newline = true;
-		}
+    bool appendToFile(const std::string &fileName, const std::string &s)
+    {
+        std::ofstream outFile;
+        bool newline = false;
 
-		outFile.open(fileName.c_str(), std::ios::app);
+        if (getFileSize(fileName) > 0) {
+            newline = true;
+        }
 
-		if(!outFile.is_open()) {
-			return false;
-		}
+        outFile.open(fileName.c_str(), std::ios::app);
 
-		// Add newline following previous line
-		if(newline) {
-			outFile << std::endl;
-		}
+        if (!outFile.is_open()) {
+            return false;
+        }
 
-		outFile << s;
+        // Add newline following previous line
+        if (newline) {
+            outFile << std::endl;
+        }
 
-		return true;
-	}
+        outFile << s;
+
+        return true;
+    }
 
     std::string format(const char *formatStr, double value)
-	{
-		char buf[100] = { 0 };
+    {
+        char buf[100] = {0};
 
-		sprintf(buf, formatStr, value);
+        sprintf(buf, formatStr, value);
 
-		return std::string(buf);
-	}
+        return std::string(buf);
+    }
 
-	std::string format(uint32_t value)
-	{
-		char buf[100] = { 0 };
+    std::string format(uint32_t value)
+    {
+        char buf[100] = {0};
 
-		sprintf(buf, "%u", value);
+        sprintf(buf, "%u", value);
 
-		return std::string(buf);
-	}
+        return std::string(buf);
+    }
 
     std::string format(uint64_t value)
-	{
-		char buf[100] = { 0 };
+    {
+        char buf[100] = {0};
 
-		sprintf(buf, "%lld", (uint64_t)value);
+        sprintf(buf, "%lld", (uint64_t) value);
 
-		return std::string(buf);
-	}
+        return std::string(buf);
+    }
 
-	std::string format(int value)
-	{
-		char buf[100] = { 0 };
+    std::string format(int value)
+    {
+        char buf[100] = {0};
 
-		sprintf(buf, "%d", value);
+        sprintf(buf, "%d", value);
 
-		return std::string(buf);
-	}
+        return std::string(buf);
+    }
 
-	void removeNewline(std::string &s)
-	{
-		size_t len = s.length();
+    void removeNewline(std::string &s)
+    {
+        size_t len = s.length();
 
-		int toRemove = 0;
+        int toRemove = 0;
 
-		if(len >= 2) {
-			if(s[len - 2] == '\r' || s[len - 2] == '\n') {
-				toRemove++;
-			}
-		}
-		if(len >= 1) {
-			if(s[len - 1] == '\r' || s[len - 1] == '\n') {
-				toRemove++;
-			}
-		}
+        if (len >= 2) {
+            if (s[len - 2] == '\r' || s[len - 2] == '\n') {
+                toRemove++;
+            }
+        }
+        if (len >= 1) {
+            if (s[len - 1] == '\r' || s[len - 1] == '\n') {
+                toRemove++;
+            }
+        }
 
-		if(toRemove) {
-			s.erase(len - toRemove);
-		}
-	}
+        if (toRemove) {
+            s.erase(len - toRemove);
+        }
+    }
 
     unsigned int endian(unsigned int x)
     {

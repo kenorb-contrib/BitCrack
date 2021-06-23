@@ -8,21 +8,21 @@ class OptArg {
 
 public:
 
-	std::string option;
-	std::string arg;
+    std::string option;
+    std::string arg;
 
-	bool equals(std::string shortForm, std::string longForm = "")
-	{
-		return (shortForm.length() > 0 && option == shortForm) || option == longForm;
-	}
+    bool equals(std::string shortForm, std::string longForm = "")
+    {
+        return (shortForm.length() > 0 && option == shortForm) || option == longForm;
+    }
 };
 
 class ArgType {
 
 public:
-	std::string shortForm;
-	std::string longForm;
-	bool hasArg;
+    std::string shortForm;
+    std::string longForm;
+    bool hasArg;
 
 };
 
@@ -30,27 +30,27 @@ class CmdParse {
 
 private:
 
-	std::vector<ArgType> _argType;
+    std::vector <ArgType> _argType;
 
-	std::vector<OptArg> _optArgs;
+    std::vector <OptArg> _optArgs;
 
-	std::vector<std::string> _operands;
+    std::vector <std::string> _operands;
 
-	bool get(const std::string opt, ArgType &t);
+    bool get(const std::string opt, ArgType &t);
 
 public:
 
-	CmdParse();
+    CmdParse();
 
-	void parse(int argc, char **argv);
+    void parse(int argc, char **argv);
 
-	void add(const std::string shortForm, const std::string longForm, bool hasArg);
-	
-	void add(const std::string shortForm, bool hasArg);
+    void add(const std::string shortForm, const std::string longForm, bool hasArg);
 
-	std::vector<OptArg> getArgs();
+    void add(const std::string shortForm, bool hasArg);
 
-	std::vector<std::string> getOperands();
+    std::vector <OptArg> getArgs();
+
+    std::vector <std::string> getOperands();
 };
 
 #endif
