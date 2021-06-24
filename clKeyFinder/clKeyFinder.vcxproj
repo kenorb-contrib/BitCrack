@@ -89,7 +89,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\KeyFinderLib;$(SolutionDir)\AddressUtil;$(SolutionDir)\Logger;$(SolutionDir)\CmdParse;$(SolutionDir)\CLKeySearchDevice;$(SolutionDir)\secp256k1lib;$(SolutionDir)\util;$(SolutionDir)\clUtil;$(OPENCL_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\KeyFinderLib;$(SolutionDir)\AddressUtil;$(SolutionDir)\Logger;$(SolutionDir)\CmdParse;$(SolutionDir)\CLKeySearchDevice;$(SolutionDir)\secp256k1lib;$(SolutionDir)\CommonUtils;$(SolutionDir)\clUtil;$(OPENCL_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;BUILD_OPENCL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -146,7 +146,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\KeyFinderLib;$(SolutionDir)\AddressUtil;$(SolutionDir)\Logger;$(SolutionDir)\CmdParse;$(SolutionDir)\CLKeySearchDevice;$(SolutionDir)\secp256k1lib;$(SolutionDir)\util;$(SolutionDir)\clUtil;$(OPENCL_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\KeyFinderLib;$(SolutionDir)\AddressUtil;$(SolutionDir)\Logger;$(SolutionDir)\CmdParse;$(SolutionDir)\CLKeySearchDevice;$(SolutionDir)\secp256k1lib;$(SolutionDir)\CommonUtils;$(SolutionDir)\clUtil;$(OPENCL_INCLUDE);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;BUILD_OPENCL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -193,6 +193,9 @@
     <ProjectReference Include="..\CmdParse\CmdParse.vcxproj">
       <Project>{f7037134-28c5-4eb9-be5d-587e79a40628}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\CommonUtils\CommonUtils.vcxproj">
+      <Project>{93b89bf6-32b9-4eba-aa44-bcfec4836b76}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\KeyFinderLib\KeyFinderLib.vcxproj">
       <Project>{53ee0c03-4419-4767-a91b-7fc7d4b3d2aa}</Project>
     </ProjectReference>
@@ -201,9 +204,6 @@
     </ProjectReference>
     <ProjectReference Include="..\secp256k1lib\secp256k1lib.vcxproj">
       <Project>{bff4b5fe-c2c5-4384-8941-cd6cb29e78c6}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\util\util.vcxproj">
-      <Project>{93b89bf6-32b9-4eba-aa44-bcfec4836b76}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "KeyFinder.h"
-#include "util.h"
+#include "CommonUtils.h"
 #include "AddressUtil.h"
 
 #include "Logger.h"
@@ -20,7 +20,9 @@ void KeyFinder::defaultStatusCallback(KeySearchStatus status)
 KeyFinder::KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint256 &endKey, int compression, KeySearchDevice* device, const secp256k1::uint256 &stride, bool randomMode)
 {
     _total = 0;
+
     _statusInterval = 1000;
+
     _device = device;
 
     _compression = compression;
@@ -83,8 +85,8 @@ void KeyFinder::setTargets(std::string targetsFile)
     std::string line;
     Logger::log(LogLevel::Info, "Loading addresses from '" + targetsFile + "'");
     while (std::getline(inFile, line)) {
-        util::removeNewline(line);
-        line = util::trim(line);
+        CommonUtils::removeNewline(line);
+        line = CommonUtils::trim(line);
 
         if (line.length() > 0) {
             if (!Address::verifyAddress(line)) {
@@ -99,7 +101,7 @@ void KeyFinder::setTargets(std::string targetsFile)
             _targets.insert(t);
         }
     }
-    Logger::log(LogLevel::Info, util::formatThousands(_targets.size()) + " addresses loaded (" + util::format("%.1f", (double) (sizeof(KeySearchTarget) * _targets.size()) / (double) (1024 * 1024)) + "MB)");
+    Logger::log(LogLevel::Info, CommonUtils::formatThousands(_targets.size()) + " addresses loaded (" + CommonUtils::format("%.1f", (double) (sizeof(KeySearchTarget) * _targets.size()) / (double) (1024 * 1024)) + "MB)");
 
     _device->setTargets(_targets);
 }
@@ -162,7 +164,7 @@ void KeyFinder::run()
 
     _running = true;
 
-    util::Timer timer;
+    CommonUtils::Timer timer;
 
     timer.start();
 

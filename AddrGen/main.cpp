@@ -3,7 +3,7 @@
 #include <time.h>
 
 #include "secp256k1.h"
-#include "util.h"
+#include "CommonUtils.h"
 #include "AddressUtil.h"
 #include "CmdParse.h"
 
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
             printAll = false;
             printAddr = true;
         } else if (arg.equals("-n")) {
-            count = (int) util::parseUInt32(arg.arg);
+            count = (int) CommonUtils::parseUInt32(arg.arg);
         }
     }
 

@@ -1,4 +1,4 @@
-#include "clutil.h"
+#include "clUtil.h"
 
 std::string cl::getErrorString(cl_int err)
 {

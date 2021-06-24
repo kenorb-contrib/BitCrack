@@ -1,6 +1,6 @@
 #include <algorithm>
 #include "ConfigFile.h"
-#include "util.h"
+#include "CommonUtils.h"
 
 ConfigFileReader::ConfigFileReader(const std::string &path)
 {
@@ -21,9 +21,9 @@ ConfigFileEntry ConfigFileReader::readEntry(const std::string &line)
         throw std::string("Invalid syntax");
     }
 
-    std::string leftSide = util::trim(line.substr(0, eqPos), ' ');
+    std::string leftSide = CommonUtils::trim(line.substr(0, eqPos), ' ');
 
-    std::string rightSide = util::trim(line.substr(eqPos + 1), ' ');
+    std::string rightSide = CommonUtils::trim(line.substr(eqPos + 1), ' ');
 
     return ConfigFileEntry(leftSide, rightSide);
 }
@@ -33,11 +33,11 @@ std::map <std::string, ConfigFileEntry> ConfigFileReader::read()
     std::vector <std::string> lines;
     std::map <std::string, ConfigFileEntry> entries;
 
-    util::readLinesFromStream(_path, lines);
+    CommonUtils::readLinesFromStream(_path, lines);
 
     for (int i = 0; i < lines.size(); i++) {
         ConfigFileEntry e = readEntry(lines[i]);
-        std::string k = util::toLower(e.key);
+        std::string k = CommonUtils::toLower(e.key);
         entries[k] = e;
     }
 

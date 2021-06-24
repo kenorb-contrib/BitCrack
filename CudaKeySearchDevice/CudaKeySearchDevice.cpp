@@ -1,6 +1,6 @@
 #include "CudaKeySearchDevice.h"
 #include "Logger.h"
-#include "util.h"
+#include "CommonUtils.h"
 #include "cudabridge.h"
 #include "AddressUtil.h"
 
@@ -31,11 +31,11 @@ CudaKeySearchDevice::CudaKeySearchDevice(int device, int threads, int pointsPerT
         throw KeySearchException("At least 1 point per thread required");
     }
 
-    // Specifying blocks on the commandline is depcreated but still supported. If there is no value for
+    // Specifying blocks on the commandline is deprecated but still supported. If there is no value for
     // blocks, devide the threads evenly among the multi-processors
     if (blocks == 0) {
         if (threads % info.mpCount != 0) {
-            throw KeySearchException("The number of threads must be a multiple of " + util::format("%d", info.mpCount));
+            throw KeySearchException("The number of threads must be a multiple of " + CommonUtils::format("%d", info.mpCount));
         }
 
         _threads = threads / info.mpCount;
@@ -106,7 +106,7 @@ void CudaKeySearchDevice::generateStartingPoints()
     uint64_t totalPoints = (uint64_t) _pointsPerThread * _threads * _blocks;
     uint64_t totalMemory = totalPoints * 40;
 
-    Logger::log(LogLevel::Info, "Generating " + util::formatThousands(totalPoints) + " starting points (" + util::format("%.1f", (double) totalMemory / (double) (1024 * 1024)) + "MB)");
+    Logger::log(LogLevel::Info, "Generating " + CommonUtils::formatThousands(totalPoints) + " starting points (" + CommonUtils::format("%.1f", (double) totalMemory / (double) (1024 * 1024)) + "MB)");
 
     // Generate key pairs for k, k+1, k+2 ... k + <total points in parallel - 1>
     secp256k1::uint256 privKey = _startExponent;
@@ -138,7 +138,7 @@ void CudaKeySearchDevice::generateStartingPoints()
         cudaCall(_deviceKeys.doStep());
 
         if (((double) i / 256.0) * 100.0 >= pct) {
-            Logger::log(LogLevel::Info, util::format("%.1f%%", pct));
+            Logger::log(LogLevel::Info, CommonUtils::format("%.1f%%", pct));
             pct += 10.0;
         }
     }

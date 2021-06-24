@@ -1,11 +1,11 @@
-#ifndef _UTIL_H
-#define _UTIL_H
+#ifndef _COMMON_UTIL_H
+#define _COMMON_UTIL_H
 
 #include <string>
 #include <vector>
 #include <stdint.h>
 
-namespace util {
+namespace CommonUtils {
 
     class Timer {
 
@@ -22,9 +22,11 @@ namespace util {
 
     uint64_t getSystemTime();
 
-    void sleep(int seconds);
+    void commonUtilsSleep(int seconds);
 
     std::string formatThousands(uint64_t x);
+
+    std::string formatThousands(std::string s);
 
     std::string formatSeconds(unsigned int seconds);
 
@@ -56,6 +58,28 @@ namespace util {
 
     std::string trim(const std::string &s, char c = ' ');
 
+    // https://stackoverflow.com/questions/10605342/converting-a-long-hexadecimal-string-to-a-decimal-string
+    class HexToDecString {
+    public:
+        static std::string convert(std::string in);
+
+    private:
+#define H2D_MAXLEN 1000
+        struct number {
+            unsigned char digits[H2D_MAXLEN];
+            unsigned int num_digits;
+        };
+
+        static void copy_number(struct number *dst, struct number *src);
+
+        static int add(struct number *, struct number *, struct number *);
+
+        static int mult(struct number *, struct number *, struct number *);
+
+        static int power(struct number *, unsigned int, struct number *);
+
+        static void dec(struct number *);
+    };
 }
 
 #endif

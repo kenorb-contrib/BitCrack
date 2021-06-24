@@ -2,7 +2,7 @@
 #define _CL_CONTEXT_H
 
 #include <string>
-#include "clutil.h"
+#include "clUtil.h"
 
 namespace cl {
 

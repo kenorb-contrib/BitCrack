@@ -1,6 +1,6 @@
 #include <cmath>
 #include "Logger.h"
-#include "util.h"
+#include "CommonUtils.h"
 #include "CLKeySearchDevice.h"
 
 // Defined in bitcrack_cl.cpp which gets build in the pre-build event
@@ -27,7 +27,7 @@ static void undoRMD160FinalRound(const unsigned int hIn[5], unsigned int hOut[5]
     };
 
     for (int i = 0; i < 5; i++) {
-        hOut[i] = util::endian(hIn[i]) - iv[(i + 1) % 5];
+        hOut[i] = CommonUtils::endian(hIn[i]) - iv[(i + 1) % 5];
     }
 }
 
@@ -153,7 +153,7 @@ void CLKeySearchDevice::allocateBuffers()
     _y = _clContext->malloc(size);
     _clContext->memset(_y, -1, size);
 
-    // Multiplicaiton chain for batch inverse
+    // Multiplication chain for batch inverse
     _chain = _clContext->malloc(size);
 
     // Private keys for initialization
@@ -541,7 +541,7 @@ void CLKeySearchDevice::generateStartingPoints()
 
     _pointsMemSize = totalPoints * sizeof(unsigned int) * 16 + _points * sizeof(unsigned int) * 8;
 
-    Logger::log(LogLevel::Info, "Generating " + util::formatThousands(totalPoints) + " starting points (" + util::format("%.1f", (double) totalMemory / (double) (1024 * 1024)) + "MB)");
+    Logger::log(LogLevel::Info, "Generating " + CommonUtils::formatThousands(totalPoints) + " starting points (" + CommonUtils::format("%.1f", (double) totalMemory / (double) (1024 * 1024)) + "MB)");
 
     // Generate key pairs for k, k+1, k+2 ... k + <total points in parallel - 1>
     secp256k1::uint256 privKey = _start;
@@ -583,7 +583,7 @@ void CLKeySearchDevice::generateStartingPoints()
         _initKeysKernel->call(_blocks, _threads);
 
         if (((double) (i + 1) / 256.0) * 100.0 >= pct) {
-            Logger::log(LogLevel::Info, util::format("%.1f%%", pct));
+            Logger::log(LogLevel::Info, CommonUtils::format("%.1f%%", pct));
             pct += 10.0;
         }
     }

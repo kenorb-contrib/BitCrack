@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include "clContext.h"
-#include "util.h"
+#include "CommonUtils.h"
 
 cl::CLContext::CLContext(cl_device_id device)
 {
@@ -96,7 +96,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, std::string srcFile, std::string op
     size_t len = src.length();
     cl_int err;
 
-    if (util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
+    if (CommonUtils::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
         options += "-DDEVICE_VENDOR_INTEL";
     }
 
@@ -125,7 +125,7 @@ cl::CLProgram::CLProgram(cl::CLContext &ctx, const char *src, std::string option
     size_t len = strlen(src);
     cl_int err;
 
-    if (util::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
+    if (CommonUtils::toLower(_ctx.getDeviceVendor()).find("intel") != std::string::npos) {
         options += " -DDEVICE_VENDOR_INTEL";
     }
 

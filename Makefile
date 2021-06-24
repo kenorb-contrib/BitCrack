@@ -1,6 +1,5 @@
-
 CUR_DIR=$(shell pwd)
-DIRS=util AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
+DIRS=CommonUtils AddressUtil CmdParse CryptoUtil KeyFinderLib CLKeySearchDevice CudaKeySearchDevice cudaMath clUtil cudaUtil secp256k1lib Logger embedcl
 
 INCLUDE = $(foreach d, $(DIRS), -I$(CUR_DIR)/$d)
 
@@ -57,7 +56,7 @@ export OPENCL_INCLUDE
 export BUILD_OPENCL
 export BUILD_CUDA
 
-TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_secp256k1lib dir_util dir_logger dir_addrgen
+TARGETS=dir_addressutil dir_cmdparse dir_cryptoutil dir_keyfinderlib dir_keyfinder dir_secp256k1lib dir_commonutils dir_logger dir_addrgen
 
 ifeq ($(BUILD_CUDA),1)
 	TARGETS:=${TARGETS} dir_cudaKeySearchDevice dir_cudautil
@@ -79,7 +78,7 @@ dir_clKeySearchDevice: dir_embedcl dir_keyfinderlib dir_clutil dir_logger
 dir_embedcl:
 	make --directory embedcl
 
-dir_addressutil:	dir_util dir_secp256k1lib dir_cryptoutil
+dir_addressutil:	dir_commonutils dir_secp256k1lib dir_cryptoutil
 	make --directory AddressUtil
 
 dir_cmdparse:
@@ -88,7 +87,7 @@ dir_cmdparse:
 dir_cryptoutil:
 	make --directory CryptoUtil
 
-dir_keyfinderlib:	dir_util dir_secp256k1lib dir_cryptoutil dir_addressutil dir_logger
+dir_keyfinderlib:	dir_commonutils dir_secp256k1lib dir_cryptoutil dir_addressutil dir_logger
 	make --directory KeyFinderLib
 
 KEYFINDER_DEPS=dir_keyfinderlib
@@ -107,14 +106,14 @@ dir_keyfinder:	$(KEYFINDER_DEPS)
 dir_cudautil:
 	make --directory cudaUtil
 
-dir_clutil:
+dir_clutil:	dir_commonutils
 	make --directory clUtil
 
 dir_secp256k1lib:	dir_cryptoutil
 	make --directory secp256k1lib
 
-dir_util:
-	make --directory util
+dir_commonutils:
+	make --directory CommonUtils
 
 dir_cudainfo:
 	make --directory cudaInfo
@@ -136,7 +135,7 @@ clean:
 	make --directory KeyFinder clean
 	make --directory cudaUtil clean
 	make --directory secp256k1lib clean
-	make --directory util clean
+	make --directory CommonUtils clean
 	make --directory cudaInfo clean
 	make --directory Logger clean
 	make --directory clUtil clean

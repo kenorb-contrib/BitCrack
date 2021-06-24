@@ -1,4 +1,4 @@
-#include "clutil.h"
+#include "clUtil.h"
 
 void cl::clCall(cl_int err)
 {

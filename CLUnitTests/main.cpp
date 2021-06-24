@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream>
-#include "clutil.h"
+#include "clUtil.h"
 #include "clContext.h"
 
 #define SECTION_ADD 0

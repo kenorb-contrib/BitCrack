@@ -2,7 +2,7 @@
 #include <time.h>
 
 #include "Logger.h"
-#include "util.h"
+#include "CommonUtils.h"
 
 bool LogLevel::isValid(int level)
 {
