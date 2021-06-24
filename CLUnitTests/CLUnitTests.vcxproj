@@ -145,7 +145,6 @@ $(SolutionDir)\tools\embedcl.exe test.cl test.cpp _secp256k1_test_cl</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\clUtil\clUtil.vcxproj">
