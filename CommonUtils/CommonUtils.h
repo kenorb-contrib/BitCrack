@@ -30,7 +30,7 @@ namespace CommonUtils {
 
     std::string formatSeconds(unsigned int seconds);
 
-    uint32_t parseUInt32(std::string s);
+    uint32_t parseUInt32(const std::string &s);
 
     uint64_t parseUInt64(std::string s);
 
