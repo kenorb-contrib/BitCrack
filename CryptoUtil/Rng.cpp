@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
+#include <stdexcept>
+
 #include "CryptoUtil.h"
 
 #ifdef _WIN32
@@ -18,17 +20,20 @@ static void secureRandom(unsigned char *buf, unsigned int count)
 static void secureRandom(unsigned char *buf, unsigned int count)
 {
     // Read from /dev/urandom
-    FILE *fp = fopen("/dev/urandom", "rb");
+    FILE *urandom = fopen("/dev/urandom", "rb");
 
-    if (fp == NULL) {
-        throw std::string("Fatal error: Cannot open /dev/urandom for reading");
+    if (!urandom) {
+        throw std::runtime_error("Fatal error: Cannot open urandom device for reading");
     }
 
-    if (fread(buf, 1, count, fp) != count) {
-        throw std::string("Fatal error: Not enough entropy available in /dev/urandom");
+    size_t bytes_read = fread(buf, 1, count, urandom);
+
+    if (bytes_read != count) {
+        fclose(urandom);
+        throw std::runtime_error("Fatal error: Not enough entropy available in urandom device");
     }
 
-    fclose(fp);
+    fclose(urandom);
 }
 
 #endif
