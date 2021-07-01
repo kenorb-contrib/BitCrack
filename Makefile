@@ -143,5 +143,5 @@ clean:
 	make --directory CudaKeySearchDevice clean
 	make --directory embedcl clean
 	make --directory CLUnitTests clean
-	rm -rf ${LIBDIR}
-	rm -rf ${BINDIR}
+	find ${LIBDIR}/ ! -name '.gitkeep' -type f -exec rm -f {} +
+	find ${BINDIR}/ ! -name '.gitkeep' -type f -exec rm -f {} +
