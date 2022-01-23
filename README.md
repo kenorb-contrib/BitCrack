@@ -8,17 +8,12 @@ A tool for brute-forcing Bitcoin private keys. The main purpose of this project 
 #### Usage
 
 
-Use `cuBitCrack.exe` for CUDA devices and `clBitCrack.exe` for OpenCL devices.
+Use `cuBitCrack.exe` for CUDA devices.
 
-### Note: **clBitCrack.exe is still EXPERIMENTAL**, as users have reported critial bugs when running on some AMD and Intel devices.
-
-**Note for Intel users:**
-
-There is bug in Intel's OpenCL implementation which affects BitCrack. Details here: https://github.com/brichard19/BitCrack/issues/123
 
 
 ```
-xxBitCrack.exe [OPTIONS] [TARGETS]
+cuBitCrack.exe [OPTIONS] [TARGETS]
 
 Where [TARGETS] are one or more Bitcoin address
 
@@ -76,35 +71,35 @@ Options:
 
 The simplest usage, the keyspace will begin at 0, and the CUDA parameters will be chosen automatically
 ```
-xxBitCrack.exe 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ```
 
 Multiple keys can be searched at once with minimal impact to performance. Provide the keys on the command line, or in a file with one address per line
 ```
-xxBitCrack.exe 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH 15JhYXn6Mx3oF4Y7PcTAv2wVVAuCFFQNiP 19EEC52krRUK1RkUAEZmQdjTyHT7Gp1TYT
+cuBitCrack.exe 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH 15JhYXn6Mx3oF4Y7PcTAv2wVVAuCFFQNiP 19EEC52krRUK1RkUAEZmQdjTyHT7Gp1TYT
 ```
 
 To start the search at a specific private key, use the `--keyspace` option:
 
 ```
-xxBitCrack.exe --keyspace 766519C977831678F0000000000 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe --keyspace 766519C977831678F0000000000 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ```
 
 The `--keyspace` option can also be used to search a specific range:
 
 ```
-xxBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ```
 
 To periodically save progress, the `--continue` option can be used. This is useful for recovering
 after an unexpected interruption:
 
 ```
-xxBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ...
 GeForce GT 640   224/1024MB | 1 target 10.33 MKey/s (1,244,659,712 total) [00:01:58]
 ^C
-xxBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe --keyspace 80000000:ffffffff 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ...
 GeForce GT 640   224/1024MB | 1 target 10.33 MKey/s (1,357,905,920 total) [00:02:12]
 ```
@@ -112,7 +107,7 @@ GeForce GT 640   224/1024MB | 1 target 10.33 MKey/s (1,357,905,920 total) [00:02
 
 Use the `-b,` `-t` and `-p` options to specify the number of blocks, threads per block, and keys per thread.
 ```
-xxBitCrack.exe -b 32 -t 256 -p 16 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
+cuBitCrack.exe -b 32 -t 256 -p 16 1FshYsUh3mqgsG29XpZ23eLjWV8Ur3VwH
 ```
 
 ### Choosing the right parameters for your device
@@ -135,51 +130,18 @@ kernel to run longer, but more keys will be processed.
 
 Visual Studio 2019 (if on Windows)
 
-For CUDA: CUDA Toolkit 10.1
-
-For OpenCL: An OpenCL SDK (The CUDA toolkit contains an OpenCL SDK).
+For CUDA: CUDA Toolkit 10.2
 
 
 ### Building in Windows
 
 Open the Visual Studio solution.
 
-Build the `clKeyFinder` project for an OpenCL build.
-
 Build the `cuKeyFinder` project for a CUDA build.
 
-Note: By default the NVIDIA OpenCL headers are used. You can set the header and library path for
-OpenCL in the `BitCrack.props` property sheet.
 
 ### Building in Linux
 
-Using `make`:
+Using `make`.
 
-Build CUDA:
 ```
-make BUILD_CUDA=1
-```
-
-Build OpenCL:
-```
-make BUILD_OPENCL=1
-```
-
-Or build both:
-```
-make BUILD_CUDA=1 BUILD_OPENCL=1
-```
-
-### Supporting this project
-
-If you find this project useful and would like to support it, consider making a donation. Your support is greatly appreciated!
-
-**BTC**: `1LqJ9cHPKxPXDRia4tteTJdLXnisnfHsof`
-
-**LTC**: `LfwqkJY7YDYQWqgR26cg2T1F38YyojD67J`
-
-**ETH**: `0xd28082CD48E1B279425346E8f6C651C45A9023c5`
-
-### Contact
-
-Send any questions or comments to bitcrack.project@gmail.com
