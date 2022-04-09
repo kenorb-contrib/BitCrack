@@ -32,12 +32,18 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.3.props" />
 ||||||| 6bf8059
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.props" />
 =======
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.2.props" />
 >>>>>>> github/dev-cuda-10-2-up
+||||||| 6bf8059
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.props" />
+=======
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.props" />
+>>>>>>> 5240b9e803b8ded4a65ff314c5ab4b15d3312218
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />

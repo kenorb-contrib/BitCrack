@@ -91,11 +91,17 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.3.targets" />
 ||||||| 6bf8059
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.targets" />
 =======
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.2.targets" />
 >>>>>>> github/dev-cuda-10-2-up
+||||||| 6bf8059
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.targets" />
+=======
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.2.targets" />
+>>>>>>> 5240b9e803b8ded4a65ff314c5ab4b15d3312218
   </ImportGroup>
 </Project>

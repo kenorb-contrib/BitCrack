@@ -18,7 +18,7 @@ void KeyFinder::defaultStatusCallback(KeySearchStatus status)
     // Do nothing
 }
 
-KeyFinder::KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint256 &endKey, int compression, KeySearchDevice* device, const secp256k1::uint256 &stride)
+KeyFinder::KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint256 &endKey, int compression, KeySearchDevice* device, const secp256k1::uint256 &stride, const secp256k1::uint256 &skip)
 {
     _total = 0;
     _statusInterval = 1000;
@@ -29,6 +29,7 @@ KeyFinder::KeyFinder(const secp256k1::uint256 &startKey, const secp256k1::uint25
     _startKey = startKey;
     _endKey = endKey;
 
+    _skipKeys = skip;
     _statusCallback = NULL;
     _resultCallback = NULL;
 
@@ -132,6 +133,12 @@ void KeyFinder::setTargetsOnDevice()
 
 void KeyFinder::init()
 {
+    // Skip this many keys before starting, if any
+    _startKey = _startKey + _skipKeys;
+    if (!_skipKeys.isZero()) {
+      Logger::log(LogLevel::Info, "New start:   " + _startKey.toString());
+      Logger::log(LogLevel::Info, "Skipping :   " + _skipKeys.toString());
+    }
     Logger::log(LogLevel::Info, "Initializing " + _device->getDeviceName());
 
     _device->init(_startKey, _compression, _stride);
