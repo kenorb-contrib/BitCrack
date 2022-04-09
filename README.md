@@ -170,6 +170,13 @@ Or build both:
 make BUILD_CUDA=1 BUILD_OPENCL=1
 ```
 
+### Building for NVIDIA Jetson Nano
+
+Make sure you have cuda 10.5 or 11.3 installed. (Tested with 10.5) 
+```
+make -f Makefile.NVIDIA_Jetson_Nano BUILD_CUDA=1
+```
+
 ### Supporting this project
 
 If you find this project useful and would like to support it, consider making a donation. Your support is greatly appreciated!
