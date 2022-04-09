@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -11,38 +11,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CudaKeySearchDevice.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="CudaAtomicList.cuh" />
-    <ClInclude Include="CudaAtomicList.h" />
-    <ClInclude Include="cudabridge.h" />
-    <ClInclude Include="CudaKeySearchDevice.h" />
-    <ClInclude Include="CudaDeviceKeys.cuh" />
-    <ClInclude Include="CudaDeviceKeys.h" />
-    <ClInclude Include="CudaHashLookup.cuh" />
-    <ClInclude Include="CudaHashLookup.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <CudaCompile Include="CudaAtomicList.cu" />
-    <CudaCompile Include="cudabridge.cu" />
-    <CudaCompile Include="CudaKeySearchDevice.cu" />
-    <CudaCompile Include="CudaDeviceKeys.cu" />
-    <CudaCompile Include="CudaHashLookup.cu" />
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\CryptoUtil\CryptoUtil.vcxproj">
+      <Project>{ca46856a-1d1e-4f6f-a69c-6707d540bf36}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\CudaKeySearchDevice\CudaKeySearchDevice.vcxproj">
+      <Project>{cca3d02c-5e5a-4a24-b34b-5961dfa93946}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\Logger\Logger.vcxproj">
       <Project>{150af404-1f80-4a13-855b-4383c4a3326f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\util\util.vcxproj">
+      <Project>{93b89bf6-32b9-4eba-aa44-bcfec4836b76}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="kernal.cu" />
+    <CudaCompile Include="main.cu" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="sha256.cuh" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{CCA3D02C-5E5A-4A24-B34B-5961DFA93946}</ProjectGuid>
-    <RootNamespace>CudaKeySearchDevice</RootNamespace>
+    <ProjectGuid>{691AB22B-0E94-4C8A-8C63-E33CF8768726}</ProjectGuid>
+    <RootNamespace>StringsHasher</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
@@ -76,7 +72,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;WIN64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalUsingDirectories>%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
-      <AdditionalIncludeDirectories>$(SolutionDir)\secp256k1lib;$(SolutionDir)\KeyFinderLib;$(SolutionDir)\Logger;$(SolutionDir)\Util;$(SolutionDir)\CudaMath;$(SolutionDir)\cudaUtil;$(SolutionDir)\AddressUtil;$(CUDA_INCLUDE)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\secp256k1lib;$(SolutionDir)\KeyFinderLib;$(SolutionDir)\Logger;$(SolutionDir)\Util;$(SolutionDir)\CudaMath;$(SolutionDir)\cudaUtil;$(SolutionDir)\CryptoUtil;$(SolutionDir)\AddressUtil;$(SolutionDir)\CudaKeySearchDevice;$(CUDA_INCLUDE)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
