@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -11,9 +11,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{E1BDB205-8994-4E49-8B35-172A84E7118C}</ProjectGuid>
-    <RootNamespace>cudaMath</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{FEBBC324-1FF3-4393-9249-535549A85B80}</ProjectGuid>
+    <RootNamespace>TestLib</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -31,13 +30,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-<<<<<<< HEAD
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.3.props" />
-||||||| 6bf8059
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.1.props" />
-=======
     <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.2.props" />
->>>>>>> github/dev-cuda-10-2-up
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -62,7 +55,6 @@
     </Link>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <PtxAsOptionV>true</PtxAsOptionV>
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -85,13 +77,10 @@
     </CudaCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ptx.cuh" />
-    <ClInclude Include="ripemd160.cuh" />
-    <ClInclude Include="secp256k1.cuh" />
-    <ClInclude Include="sha256.cuh" />
+    <CudaCompile Include="kernel.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 11.3.targets" />
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\CUDA 10.2.targets" />
   </ImportGroup>
 </Project>
