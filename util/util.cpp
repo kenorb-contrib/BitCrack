@@ -25,33 +25,33 @@ namespace util {
 #else
         struct timeval t;
         gettimeofday(&t, NULL);
-        return (uint64_t)t.tv_sec * 1000 + t.tv_usec / 1000;
+return (uint64_t)t.tv_sec * 1000 + t.tv_usec / 1000;
 #endif
-    }
+	}
 
-    Timer::Timer()
-    {
-        _startTime = 0;
-    }
+	Timer::Timer()
+	{
+		_startTime = 0;
+	}
 
-    void Timer::start()
-    {
-        _startTime = getSystemTime();
-    }
+	void Timer::start()
+	{
+		_startTime = getSystemTime();
+	}
 
-    uint64_t Timer::getTime()
-    {
-        return getSystemTime() - _startTime;
-    }
+	uint64_t Timer::getTime()
+	{
+		return getSystemTime() - _startTime;
+	}
 
-    void sleep(int seconds)
-    {
+	void sleep(int seconds)
+	{
 #ifdef _WIN32
-        Sleep(seconds * 1000);
+		Sleep(seconds * 1000);
 #else
-        sleep(seconds);
+		sleep(seconds);
 #endif
-    }
+	}
 
     std::string formatThousands(uint64_t x)
     {
@@ -65,7 +65,7 @@ namespace util {
 
         int numCommas = (len - 1) / 3;
 
-        if(numCommas == 0) {
+        if (numCommas == 0) {
             return s;
         }
 
@@ -73,10 +73,10 @@ namespace util {
 
         int count = ((len % 3) == 0) ? 0 : (3 - (len % 3));
 
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             result += s[i];
 
-            if(count++ == 2 && i < len - 1) {
+            if (count++ == 2 && i < len - 1) {
                 result += ",";
                 count = 0;
             }
@@ -95,22 +95,22 @@ namespace util {
         uint64_t val = 0;
         bool isHex = false;
 
-        if(s[0] == '0' && s[1] == 'x') {
+        if (s[0] == '0' && s[1] == 'x') {
             isHex = true;
             s = s.substr(2);
         }
         
-        if(s[s.length() - 1] == 'h') {
+        if (s[s.length() - 1] == 'h') {
             isHex = true;
             s = s.substr(0, s.length() - 1);
         }
 
-        if(isHex) {
-            if(sscanf(s.c_str(), "%llx", &val) != 1) {
+        if (isHex) {
+            if (sscanf(s.c_str(), "%llx", &val) != 1) {
                 throw std::string("Expected an integer");
             }
         } else {
-            if(sscanf(s.c_str(), "%lld", &val) != 1) {
+            if (sscanf(s.c_str(), "%lld", &val) != 1) {
                 throw std::string("Expected an integer");
             }
         }
@@ -118,9 +118,37 @@ namespace util {
         return val;
     }
 
-    bool isHex(const std::string &s)
+    std::vector<int> parseInts(std::string s)
     {
-        int len = 0;
+      std::vector<int> result;
+      size_t start = 0, end = 0;
+      char sep = ',';
+      int item;
+
+      try
+      {
+        while ((end = s.find(sep, start)) != std::string::npos) {
+          item = std::stoi(s.substr(start, end - start));
+          result.push_back(item);
+          start = end + 1;
+        }
+
+        item = std::stoi(s.substr(start));
+        result.push_back(item);
+
+        return result;
+      }
+      catch (const std::invalid_argument)
+      {
+        printf("Invalid %s argument, number expected\n");
+        exit(-1);
+      }
+    }
+
+
+	bool isHex(const std::string &s)
+	{
+		int len = 0;
 
         for(int i = 0; i < len; i++) {
             char c = s[i];

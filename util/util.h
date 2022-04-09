@@ -26,6 +26,7 @@ std::string formatSeconds(unsigned int seconds);
 
 uint32_t parseUInt32(std::string s);
 uint64_t parseUInt64(std::string s);
+std::vector<int> parseInts(std::string s);
 bool isHex(const std::string &s);
 bool appendToFile(const std::string &fileName, const std::string &s);
 bool readLinesFromStream(std::istream &in, std::vector<std::string> &lines);

@@ -60,6 +60,8 @@ typedef struct RunConfig {
     secp256k1::uint256 stride = 1;
 
     bool follow = false;
+
+    std::vector<int> devices;
 }RunConfig;
 
 static RunConfig _config;
@@ -203,6 +205,7 @@ void usage()
     printf("--compression  MODE     Specify compression where MODE is\n");
     printf("                          COMPRESSED or UNCOMPRESSED or BOTH\n");
     printf("-d, --device ID         Use device ID\n");
+    printf("-g deviceIds g1,g2,g3   Use device Ids\n");
     printf("-b, --blocks N          N blocks\n");
     printf("-t, --threads N         N threads per block\n");
     printf("-p, --points N          N points per thread\n");
@@ -407,6 +410,64 @@ int run()
             _config.pointsPerThread = params.pointsPerThread;
         }
 
+        if (_config.devices.size() > 1)
+        {
+            secp256k1::uint256 size = (_config.endKey - _config.startKey);
+            size = size.div(_config.devices.size());
+
+            secp256k1::uint256 start = _config.startKey;
+            secp256k1::uint256 end = _config.startKey + size;
+
+            for (int i = 0; i < _config.devices.size(); i++)
+            {
+                
+
+                KeySearchDevice* d = getDeviceContext(_devices[_config.devices[i]], _config.blocks, _config.threads, _config.pointsPerThread);
+
+                KeyFinder f(start, end, _config.compression, d, _config.stride);
+
+                f.setResultCallback(resultCallback);
+                f.setStatusInterval(_config.statusInterval);
+                f.setStatusCallback(statusCallback);
+
+                f.init();
+
+                if (!_config.targetsFile.empty()) {
+                    f.setTargets(_config.targetsFile);
+                }
+                else {
+                    f.setTargets(_config.targets);
+                }
+
+                f.run();
+
+                start = end + 1;
+                end = start + size;
+            }
+        }
+        else
+        {
+            // Get device context
+            KeySearchDevice* d = getDeviceContext(_devices[_config.device], _config.blocks, _config.threads, _config.pointsPerThread);
+
+            KeyFinder f(_config.nextKey, _config.endKey, _config.compression, d, _config.stride);
+
+            f.setResultCallback(resultCallback);
+            f.setStatusInterval(_config.statusInterval);
+            f.setStatusCallback(statusCallback);
+
+            f.init();
+
+            if (!_config.targetsFile.empty()) {
+                f.setTargets(_config.targetsFile);
+            }
+            else {
+                f.setTargets(_config.targets);
+            }
+
+            f.run();
+        }
+
         // Get device context
         KeySearchDevice *d = getDeviceContext(_devices[_config.device], _config.blocks, _config.threads, _config.pointsPerThread);
 
@@ -511,6 +572,7 @@ int main(int argc, char **argv)
 
     CmdParse parser;
     parser.add("-d", "--device", true);
+    parser.add("-g", "--gpuIds", true);
     parser.add("-t", "--threads", true);
     parser.add("-b", "--blocks", true);
     parser.add("-p", "--points", true);
@@ -563,6 +625,8 @@ int main(int argc, char **argv)
                 _config.targetsFile = optArg.arg;
             } else if(optArg.equals("-o", "--out")) {
                 _config.resultsFile = optArg.arg;
+            } else if (optArg.equals("-g", "--gpuIds")) {
+                _config.devices = util::parseInts(optArg.arg);
             } else if(optArg.equals("", "--list-devices")) {
                 listDevices = true;
             } else if(optArg.equals("", "--continue")) {
